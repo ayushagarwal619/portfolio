@@ -18,11 +18,11 @@ export default function LoadingScreen({
   const [isMounted, setIsMounted] = useState(true);
 
   const overlayRef = useRef<HTMLDivElement>(null);
-  const logoPathRef = useRef<SVGPathElement>(null);
   const curtainRef = useRef<SVGPathElement>(null);
+  const pathsRef = useRef<(SVGPathElement | null)[]>([]);
 
   useGSAP(() => {
-    if (!logoPathRef.current || !curtainRef.current) return;
+    if (!curtainRef.current) return;
 
     gsap.set(curtainRef.current, { attr: { d: CURTAIN_EXPANDED } });
 
@@ -33,11 +33,16 @@ export default function LoadingScreen({
       },
     });
 
-    tl.add(() =>
-      animateDrawSVG(logoPathRef.current as SVGPathElement, 0, 100, 1.0, "power2.inOut")
-    );
+    // Draw all logo mark strokes in parallel
+    tl.add(() => {
+      pathsRef.current.forEach((path) => {
+        if (path) {
+          animateDrawSVG(path, 0, 100, 0.9, "power2.inOut");
+        }
+      });
+    });
 
-    tl.to({}, { duration: 0.3 });
+    tl.to({}, { duration: 0.5 });
 
     tl.to(curtainRef.current, {
       attr: { d: CURTAIN_COLLAPSED },
@@ -60,17 +65,82 @@ export default function LoadingScreen({
             viewBox="0 0 1000 1000"
             preserveAspectRatio="none"
           >
-            <path ref={curtainRef} className="fill-foreground" d={CURTAIN_EXPANDED} />
+            <path ref={curtainRef} className="fill-[#0d0d0d]" d={CURTAIN_EXPANDED} />
           </svg>
 
-          <div className="absolute inset-0 flex items-center justify-center">
-            <svg viewBox="0 0 500 500" className="w-20 h-20 md:w-28 md:h-28 fill-none">
+          {/* New AKA Logo Animatable Mark */}
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <svg
+              viewBox="0 0 360 150"
+              className="w-48 h-20 sm:w-64 sm:h-28 md:w-80 md:h-36 fill-none drop-shadow-[0_0_25px_rgba(0,255,157,0.25)]"
+            >
+              {/* Chevron Triangle */}
               <path
-                ref={logoPathRef}
-                d="M 175 165 L 325 165 L 175 335 L 325 335"
-                className="fill-none stroke-background stroke-[50]"
+                ref={(el) => { pathsRef.current[0] = el; }}
+                d="M 25 35 L 68 65 L 25 95 Z"
+                className="stroke-[#00ff9d] stroke-[8] fill-none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+              />
+
+              {/* Letter 'A' (First) */}
+              <path
+                ref={(el) => { pathsRef.current[1] = el; }}
+                d="M 95 105 L 125 25 L 155 105"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                ref={(el) => { pathsRef.current[2] = el; }}
+                d="M 107 78 L 143 78"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+              />
+
+              {/* Letter 'K' */}
+              <path
+                ref={(el) => { pathsRef.current[3] = el; }}
+                d="M 180 25 L 180 105"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+              />
+              <path
+                ref={(el) => { pathsRef.current[4] = el; }}
+                d="M 230 25 L 180 65"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                ref={(el) => { pathsRef.current[5] = el; }}
+                d="M 195 55 L 235 105"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Letter 'A' (Second) */}
+              <path
+                ref={(el) => { pathsRef.current[6] = el; }}
+                d="M 260 105 L 290 25 L 320 105"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                ref={(el) => { pathsRef.current[7] = el; }}
+                d="M 272 78 L 308 78"
+                className="stroke-[#f2f2f2] stroke-[10] fill-none"
+                strokeLinecap="round"
+              />
+
+              {/* Underline Accent */}
+              <path
+                ref={(el) => { pathsRef.current[8] = el; }}
+                d="M 95 124 L 320 124"
+                className="stroke-[#00ff9d] stroke-[7] fill-none"
+                strokeLinecap="round"
               />
             </svg>
           </div>

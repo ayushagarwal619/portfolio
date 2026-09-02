@@ -19,6 +19,8 @@ export interface AssetsConfig {
   profilePortrait: string;
   resumePdf: string;
   favicon: string;
+  logoMark: string;
+  logoBadge: string;
 }
 
 export interface SocialLink {
@@ -47,12 +49,14 @@ Currently, I'm focused on improving my development skills, strengthening my DSA 
 
 /**
  * Centralized assets configuration.
- * Change portrait or document paths here in one place.
+ * Change portrait, document, or logo paths here in one place.
  */
 export const assetsConfig: AssetsConfig = {
-  profilePortrait: "/Images/Profile/portrait.webp", // TODO: drop portrait image into public/Images/Profile/
-  resumePdf: "/resume.pdf", // TODO: add resume PDF
-  favicon: "/favicon.ico",
+  profilePortrait: "", // Set empty string for clean monogram/badge fallback
+  resumePdf: "/resume.pdf", // Gracefully handled
+  favicon: "/favicon-32.png",
+  logoMark: "/Images/logo-mark.svg",
+  logoBadge: "/Images/logo-badge.svg",
 };
 
 export const socialLinks: SocialLink[] = [

@@ -2,8 +2,9 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Github, Linkedin, Twitter } from "lucide-react";
+import { Menu, X, Github, Linkedin } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 import { playClick, playHover } from "@/lib/soundEffects";
 
@@ -39,22 +40,23 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-[999] flex items-center justify-between px-6 md:px-10 py-5 md:py-7 mix-blend-difference">
+      <header className="fixed top-0 left-0 w-full z-[999] flex items-center justify-between px-6 md:px-10 py-5 md:py-6 mix-blend-difference">
+        {/* AKA Logo Mark */}
         <Link
           href="/"
-          aria-label="Home"
+          aria-label="Ayush Kumar Agarwal (AKA)"
           onClick={() => playClick()}
           onMouseEnter={() => playHover()}
-          className="w-9 h-9 md:w-11 md:h-11 relative z-[1000]"
+          className="relative z-[1000] flex items-center group transition-transform duration-300 hover:scale-105"
         >
-          <svg viewBox="0 0 500 500" className="w-full h-full fill-none">
-            <path
-              d="M 175 165 L 325 165 L 175 335 L 325 335"
-              className="fill-none stroke-foreground stroke-[50]"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Image
+            src="/Images/logo-mark.svg"
+            alt="AKA Logo"
+            width={110}
+            height={44}
+            priority
+            className="h-8 md:h-10 w-auto object-contain"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">

@@ -3,17 +3,15 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { heroContent, assetsConfig, socialLinks } from "@/data/bioData";
-import { Download, ArrowUpRight, Terminal, Github, Linkedin, Sparkles } from "lucide-react";
+import { Download, ArrowUpRight, Terminal, Github, Linkedin } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
 
 export default function HeroSection() {
   const [imgError, setImgError] = useState(false);
   const hasPortrait = !!assetsConfig.profilePortrait && !imgError && assetsConfig.profilePortrait.length > 0;
 
-  const handleResumeDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleResumeDownload = () => {
     playClick();
-    // Safe graceful handling if file is not yet dropped into /public
-    // Link still points to /resume.pdf and triggers browser download
   };
 
   return (
@@ -28,7 +26,7 @@ export default function HeroSection() {
           <span>{heroContent.terminalLine}</span>
         </div>
 
-        {/* Profile Avatar: Portrait Image OR Monogram Fallback */}
+        {/* Profile Avatar: Portrait Image OR AKA Logo Badge Fallback */}
         <div className="relative my-2">
           {hasPortrait ? (
             <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-orange/40 shadow-xl shadow-orange/10">
@@ -42,15 +40,15 @@ export default function HeroSection() {
               />
             </div>
           ) : (
-            /* Premium Monogram Fallback Badge */
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-2 border-orange/30 bg-gradient-to-br from-[#1f1a1a] via-[#141212] to-[#0d0d0d] flex flex-col items-center justify-center shadow-xl shadow-orange/10 group hover:border-orange transition-all duration-300">
-              <div className="absolute inset-0 bg-orange/5 rounded-2xl blur-sm" />
-              <span className="relative font-bigger-display text-3xl sm:text-4xl uppercase tracking-widest text-foreground">
-                AKA
-              </span>
-              <span className="relative text-[9px] font-barlow-condensed tracking-widest uppercase text-orange font-bold -mt-1">
-                DEV · AI/ML
-              </span>
+            /* AKA Brand Logo Badge */
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-orange/30 shadow-xl shadow-orange/10 group hover:border-orange hover:shadow-orange/20 transition-all duration-300">
+              <Image
+                src={assetsConfig.logoBadge}
+                alt="Ayush Kumar Agarwal (AKA)"
+                fill
+                priority
+                className="object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+              />
             </div>
           )}
         </div>
