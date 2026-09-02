@@ -4,9 +4,10 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Github, Linkedin } from "lucide-react";
+import { Download, Menu, X, Github, Linkedin } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 import { playClick, playHover } from "@/lib/soundEffects";
+import { assetsConfig } from "@/data/bioData";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -40,7 +41,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-[999] flex items-center justify-between px-6 md:px-10 py-5 md:py-6 mix-blend-difference">
+      <header className="fixed top-4 left-4 right-4 z-[999] flex items-center justify-between gap-4 rounded-xl border border-orange/30 bg-background/80 px-5 py-3 backdrop-blur-xl shadow-[0_0_30px_rgba(249,52,52,0.08)] md:px-7 md:py-4">
         {/* AKA Logo Mark */}
         <Link
           href="/"
@@ -55,11 +56,11 @@ export default function Navbar() {
             width={110}
             height={44}
             priority
-            className="h-8 md:h-10 w-auto object-contain"
+            className="h-7 md:h-8 w-auto object-contain"
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-10">
+        <nav className="hidden md:flex items-center gap-4 lg:gap-5 xl:gap-8">
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -68,7 +69,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => playClick()}
                 onMouseEnter={() => playHover()}
-                className={`font-barlow-condensed text-sm tracking-[.2rem] uppercase font-semibold transition-opacity duration-300 ${
+                className={`font-barlow-condensed text-xs lg:text-sm tracking-[.15rem] lg:tracking-[.2rem] uppercase font-semibold transition-opacity duration-300 ${
                   isActive ? "text-orange" : "text-foreground hover:opacity-60"
                 }`}
               >
@@ -77,6 +78,17 @@ export default function Navbar() {
             );
           })}
         </nav>
+
+        <a
+          href={assetsConfig.resumePdf}
+          download="Ayush_Kumar_Agarwal_Resume.pdf"
+          onClick={() => playClick()}
+          onMouseEnter={() => playHover()}
+          className="hidden lg:flex items-center gap-2 rounded-lg border border-orange/60 px-3 py-2 font-barlow-condensed text-xs tracking-[.14rem] uppercase text-foreground transition-colors hover:bg-orange hover:text-background xl:px-4"
+        >
+          <Download className="h-3.5 w-3.5" />
+          Download Resume
+        </a>
 
         <button
           onClick={() => {

@@ -57,7 +57,6 @@
   
   --font-bigger-display: "biggerDisplay", sans-serif;
   --font-barlow-condensed: "Barlow Condensed", sans-serif;
-
 }
 
 :root {
@@ -87,8 +86,6 @@ body {
   font-family: "Barlow Condensed", sans-serif !important;
 }
 
-
-
 .word,
 .char,
 .char-span {
@@ -110,4 +107,24 @@ img {
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   user-select: none;
+}
+
+/* Mouse scroll indicator animation */
+@keyframes scrollWheel {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(8px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+.animate-scroll-wheel {
+  animation: scrollWheel 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }

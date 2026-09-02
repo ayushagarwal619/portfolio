@@ -72,13 +72,13 @@ export default function LoadingScreen({
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <svg
               viewBox="0 0 360 150"
-              className="w-48 h-20 sm:w-64 sm:h-28 md:w-80 md:h-36 fill-none drop-shadow-[0_0_25px_rgba(0,255,157,0.25)]"
+              className="w-48 h-20 sm:w-64 sm:h-28 md:w-80 md:h-36 fill-none drop-shadow-[0_0_25px_rgba(249,52,52,0.25)]"
             >
               {/* Chevron Triangle */}
               <path
                 ref={(el) => { pathsRef.current[0] = el; }}
                 d="M 25 35 L 68 65 L 25 95 Z"
-                className="stroke-[#00ff9d] stroke-[8] fill-none"
+                className="stroke-orange stroke-[8] fill-none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -139,7 +139,7 @@ export default function LoadingScreen({
               <path
                 ref={(el) => { pathsRef.current[8] = el; }}
                 d="M 95 124 L 320 124"
-                className="stroke-[#00ff9d] stroke-[7] fill-none"
+                className="stroke-orange stroke-[7] fill-none"
                 strokeLinecap="round"
               />
             </svg>

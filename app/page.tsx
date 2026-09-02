@@ -7,11 +7,13 @@ import CertificatesSection from "@/components/CertificatesSection";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
 import ContactSection from "@/components/ContactSection";
 import ParticleCanvas from "@/components/ParticleCanvas";
+import ScrollImageSequence from "@/components/ScrollImageSequence";
 
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-background text-foreground flex flex-col items-center">
       {/* Interactive WebGL particle canvas for background visual interest */}
+      <ScrollImageSequence />
       <ParticleCanvas />
 
       {/* Main Sections */}

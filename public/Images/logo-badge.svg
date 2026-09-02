@@ -11,12 +11,12 @@
   <!-- Centered Logo Group -->
   <g transform="translate(106, 176)">
     <!-- Left Chevron / Triangle Indicator -->
-    <polygon points="0,20 52,60 0,100" fill="#00ff9d" />
+    <polygon points="0,20 52,60 0,100" fill="#f93434" />
     
     <!-- "AKA" Text Monogram -->
     <text x="76" y="85" fill="#f2f2f2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="82" letter-spacing="4">AKA</text>
     
-    <!-- Accent Green Underline -->
-    <rect x="76" y="108" width="220" height="9" rx="4.5" fill="#00ff9d" />
+    <!-- Accent Orange Underline -->
+    <rect x="76" y="108" width="220" height="9" rx="4.5" fill="#f93434" />
   </g>
 </svg>

@@ -1,0 +1,184 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+const FRAME_COUNT = 100;
+const PRELOAD_BATCH_SIZE = 4;
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const framePath = (index: number) =>
+  `/Images/Home/sequence/frame-${String(index + 1).padStart(3, "0")}.webp`;
+
+export default function ScrollImageSequence() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const currentFrameRef = useRef(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+
+    return () => mediaQuery.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const images: HTMLImageElement[] = [];
+    const pendingResolves = new Set<() => void>();
+    let isCancelled = false;
+    let resizeFrame: number | null = null;
+    let sequenceTween: gsap.core.Tween | null = null;
+
+    const drawFrame = (image: HTMLImageElement) => {
+      if (isCancelled || !image.naturalWidth || !image.naturalHeight) return;
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      const scale = Math.max(
+        canvas.width / image.naturalWidth,
+        canvas.height / image.naturalHeight
+      );
+      const width = image.naturalWidth * scale;
+      const height = image.naturalHeight * scale;
+      const x = (canvas.width - width) / 2;
+      const y = (canvas.height - height) / 2;
+
+      context.drawImage(image, x, y, width, height);
+    };
+
+    const drawCurrentFrame = () => {
+      for (let distance = 0; distance < FRAME_COUNT; distance++) {
+        const lower = currentFrameRef.current - distance;
+        const upper = currentFrameRef.current + distance;
+        const image = images[lower] ?? images[upper];
+
+        if (image?.complete && image.naturalWidth > 0) {
+          drawFrame(image);
+          return;
+        }
+      }
+    };
+
+    const resizeCanvas = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(window.innerWidth * dpr);
+      canvas.height = Math.round(window.innerHeight * dpr);
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      drawCurrentFrame();
+    };
+
+    const loadFrame = (index: number) =>
+      new Promise<HTMLImageElement>((resolve) => {
+        const image = new Image();
+        image.decoding = "async";
+        images[index] = image;
+
+        const finish = () => {
+          pendingResolves.delete(finish);
+          resolve(image);
+        };
+        pendingResolves.add(finish);
+
+        image.onload = () => {
+          void image.decode().catch(() => undefined).finally(finish);
+        };
+        image.onerror = finish;
+        image.src = framePath(index);
+      });
+
+    const preloadRemainingFrames = async () => {
+      for (let start = 1; start < FRAME_COUNT && !isCancelled; start += PRELOAD_BATCH_SIZE) {
+        const indexes = Array.from(
+          { length: Math.min(PRELOAD_BATCH_SIZE, FRAME_COUNT - start) },
+          (_, offset) => start + offset
+        );
+
+        await Promise.all(indexes.map(loadFrame));
+      }
+    };
+
+    const handleResize = () => {
+      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = null;
+        resizeCanvas();
+      });
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", handleResize);
+
+    void loadFrame(0).then((firstFrame) => {
+      if (isCancelled) return;
+      drawFrame(firstFrame);
+      if (!prefersReducedMotion) void preloadRemainingFrames();
+    });
+
+    if (!prefersReducedMotion) {
+      const frameState = { index: 0 };
+      sequenceTween = gsap.to(frameState, {
+        index: FRAME_COUNT - 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: document.body,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+        },
+        onUpdate: () => {
+          currentFrameRef.current = Math.round(frameState.index);
+          drawCurrentFrame();
+        },
+      });
+    }
+
+    return () => {
+      isCancelled = true;
+      sequenceTween?.scrollTrigger?.kill();
+      sequenceTween?.kill();
+      window.removeEventListener("resize", handleResize);
+
+      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+      [...pendingResolves].forEach((finish) => finish());
+      images.forEach((image) => {
+        image.onload = null;
+        image.onerror = null;
+        image.src = "";
+      });
+    };
+  }, [prefersReducedMotion]);
+
+  return (
+    <>
+      {/* High Visibility Scroll Sequence Portrait (0.62 Opacity) */}
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="fixed inset-0 z-0 h-full w-full pointer-events-none opacity-[0.62] brightness-[1.08] contrast-[1.10] saturate-[1.05]"
+      />
+      {/* Dark Vignette & Gradient Overlays for Center Text Contrast */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-background/40 via-transparent to-background/85"
+      />
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_transparent_40%,_var(--background)_95%)]"
+      />
+    </>
+  );
+}
