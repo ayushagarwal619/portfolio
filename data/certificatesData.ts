@@ -84,6 +84,7 @@ export const certificatesData: CertificateItem[] = [
     date: "17 Aug 2026",
     result: "Participant",
     credentialId: "NEX26-PART-0323",
+    imagePath: "/Images/Certificates/nexbuildon-hack-2026.jpg",
   },
   {
     id: "hackforge-srijan-2026",
@@ -116,6 +117,7 @@ export const certificatesData: CertificateItem[] = [
     result: "Top 50 Finalist",
     team: "Zenforge",
     isQrVerifiable: true,
+    imagePath: "/Images/Certificates/ideatex-session-zero-2026.jpg",
   },
   {
     id: "mlx-session-zero-2026",
@@ -134,6 +136,7 @@ export const certificatesData: CertificateItem[] = [
     organizer: "HackWithIndia (via Devnovate)",
     date: "20 Mar 2026",
     result: "Participant",
+    imagePath: "/Images/Certificates/vibe-with-india-2.jpg",
   },
   {
     id: "hult-prize-2026",
@@ -143,6 +146,7 @@ export const certificatesData: CertificateItem[] = [
     date: "30 Jan 2026",
     result: "Participant",
     project: "KidGuides",
+    imagePath: "/Images/Certificates/hult-prize-2026.jpg",
   },
   {
     id: "ace-the-case-srijan-2026",
@@ -182,6 +186,7 @@ export const certificatesData: CertificateItem[] = [
     organizer: "NISM (SEBI initiative)",
     date: "2026",
     result: "Participant",
+    imagePath: "/Images/Certificates/national-financial-literacy-quiz-2026.jpg",
   },
   {
     id: "hacktherank-quiz",
@@ -191,6 +196,7 @@ export const certificatesData: CertificateItem[] = [
     date: "2026",
     result: "Participant",
     isQrVerifiable: true,
+    imagePath: "/Images/Certificates/hacktherank-quiz.jpg",
   },
   {
     id: "vande-mataram-150-quiz",
@@ -199,6 +205,7 @@ export const certificatesData: CertificateItem[] = [
     organizer: "Ministry of Culture & MyGov",
     date: "2026",
     result: "Participant",
+    imagePath: "/Images/Certificates/vande-mataram-150-quiz.png",
   },
   {
     id: "data-sprint-2026",
@@ -218,6 +225,7 @@ export const certificatesData: CertificateItem[] = [
     date: "22 Mar 2026",
     result: "Participant",
     isQrVerifiable: true,
+    imagePath: "/Images/Certificates/ice-breaker-5.jpg",
   },
 
   // --- Workshops ---
@@ -241,6 +249,7 @@ export const certificatesData: CertificateItem[] = [
     date: "2026",
     result: "Completed",
     credentialId: "6a3d4bc3ed172e4a2b02ad9a",
+    imagePath: "/Images/Certificates/prime-aiml-course.png",
   },
   {
     id: "financial-freedom-batch-15",
@@ -250,6 +259,7 @@ export const certificatesData: CertificateItem[] = [
     date: "Started 15 Nov 2025",
     result: "Completed",
     credentialId: "S2W-FF15-SAPPHIRE-2026",
+    imagePath: "/Images/Certificates/financial-freedom-batch-15.jpg",
   },
 ];
 
