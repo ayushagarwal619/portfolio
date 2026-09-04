@@ -63,7 +63,11 @@ export const projectsData: ProjectItem[] = [
     ],
     liveDemoUrl: "https://smartattend-a.streamlit.app/",
     githubUrl: "https://github.com/ayushagarwal619/SMARTATTEND",
-    images: [], // TODO: public/Images/Projects/SmartAttend/ (dashboard, enrollment screen, attendance results view)
+    images: [
+      "/Images/Projects/SmartAttend/smartattend-landing.jpg",
+      "/Images/Projects/SmartAttend/smartattend-face-login.jpg",
+      "/Images/Projects/SmartAttend/smartattend-student-dashboard.jpg",
+    ],
     teamInfo: {
       isTeam: false,
       role: "Solo Developer",
@@ -91,7 +95,11 @@ export const projectsData: ProjectItem[] = [
     ],
     liveDemoUrl: "https://gymguru-1.onrender.com/",
     githubUrl: "https://github.com/ayushagarwal619/GymGuru",
-    images: [], // TODO: public/Images/Projects/GymGuru/ (pose-overlay view, post-workout history table)
+    images: [
+      "/Images/Projects/GymGuru/gymguru-landing.jpg",
+      "/Images/Projects/GymGuru/gymguru-dashboard.png",
+      "/Images/Projects/GymGuru/gymguru-features.jpg",
+    ],
     teamInfo: {
       isTeam: false,
       role: "Solo Developer",
@@ -124,7 +132,10 @@ export const projectsData: ProjectItem[] = [
     ],
     liveDemoUrl: "https://jansewa-vert.vercel.app/",
     githubUrl: "https://github.com/ayushagarwal619/JANSEWA",
-    images: [], // TODO: public/Images/Projects/JanSewa/ (Home/Citizen View, AI Scheme Finder, Grievance Reporting, Admin Dashboard)
+    images: [
+      "/Images/Projects/JanSewa/jansewa-home.jpg",
+      "/Images/Projects/JanSewa/jansewa-grievance.png",
+    ],
     teamInfo: {
       isTeam: false,
       role: "Solo Developer",
@@ -159,7 +170,10 @@ export const projectsData: ProjectItem[] = [
     ],
     liveDemoUrl: null,
     githubUrl: "https://github.com/ayushagarwal619/RESUMATCH",
-    images: [], // TODO: public/Images/Projects/ResuMatch/ (score breakdown dashboard, report export)
+    images: [
+      "/Images/Projects/ResuMatch/resumatch-landing.jpg",
+      "/Images/Projects/ResuMatch/resumatch-analyze.jpg",
+    ],
     teamInfo: {
       isTeam: false,
       role: "Solo Developer",
@@ -186,7 +200,7 @@ export const projectsData: ProjectItem[] = [
     ],
     liveDemoUrl: null,
     githubUrl: "https://github.com/ayushagarwal619/RoopAntar",
-    images: [], // TODO: public/Images/Projects/RoopAntar/
+    images: [],
     teamInfo: {
       isTeam: false,
       role: "Solo Developer",
@@ -206,11 +220,11 @@ export const projectsData: ProjectItem[] = [
     techStack: ["HTML5", "CSS3", "Vanilla JavaScript", "GitHub Pages"],
     liveDemoUrl: "https://ayushagarwal619.github.io/NIMIZA",
     githubUrl: "https://github.com/ayushagarwal619/NIMIZA",
-    images: [], // TODO: public/Images/Projects/NIMIZA/ (preview available: https://github.com/ayushagarwal619/NIMIZA/raw/main/assets/preview.png)
+    images: [],
     teamInfo: {
       isTeam: false,
       role: "Solo Developer",
-      note: "Possibly connected to AIEEE Hackathon Nimiza Startup Pitch certificate",
+      note: "Connected to AIEEE Hackathon Nimiza Startup Pitch certificate",
     },
   },
   {
