@@ -108,7 +108,7 @@ Currently, I'm focused on improving my development skills, strengthening my DSA 
 - Description: Interactive learning platform for kids aged 3–8, built around three guide characters (Nino, Miko, Zara) teaching curiosity, kindness, and problem-solving through animated learning reels, six interactive storybooks, mini-games (Balloon Pop, Slide Puzzle), a daily routine/habit tracker, and "mood rings" for emotional awareness.
 - Tech Stack: HTML5, CSS3, Vanilla JavaScript, GitHub Pages
 - Live Demo: https://ayushagarwal619.github.io/NIMIZA
-- GitHub: https://github.com/ayushagarwal619/NIMIZA
+- GitHub: https://github.com/ayushagarwal619/NIMIZA-Application
 - Team/Solo: Solo (verify — possibly connected to the AIEEE Hackathon "Nimiza Startup Pitch" certificate; confirm before cross-linking)
 - Images: real preview available at https://github.com/ayushagarwal619/NIMIZA/raw/main/assets/preview.png — usable directly
 
