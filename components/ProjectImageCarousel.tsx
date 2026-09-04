@@ -53,17 +53,8 @@ export default function ProjectImageCarousel({
     setActiveIndex(0);
   }, [images]);
 
-  // --- No screenshots yet: clean placeholder, never a broken box ---
   if (!hasImages) {
-    return (
-      <div
-        className={`relative w-full h-full flex items-center justify-center bg-gradient-to-br from-[#1c1c20] to-[#131212] border border-[#272522] ${className}`}
-      >
-        <span className="font-barlow-condensed text-[10px] md:text-xs tracking-[.3rem] uppercase text-foreground/30">
-          Preview coming soon
-        </span>
-      </div>
-    );
+    return null;
   }
 
   return (

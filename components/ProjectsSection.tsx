@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { projectsData } from "@/data/projectsData";
 import ProjectCard from "./ProjectCard";
 import { Sparkles, Grid } from "lucide-react";
+import { playClick, playHover } from "@/lib/soundEffects";
 
 export default function ProjectsSection() {
   const [filter, setFilter] = useState<"all" | "featured">("all");
@@ -31,7 +32,11 @@ export default function ProjectsSection() {
       {/* Filter Buttons */}
       <div className="flex items-center justify-center gap-3 mb-10">
         <button
-          onClick={() => setFilter("all")}
+          onClick={() => {
+            playClick();
+            setFilter("all");
+          }}
+          onMouseEnter={() => playHover()}
           className={`flex items-center gap-1.5 text-xs font-barlow-condensed uppercase tracking-widest font-semibold px-4 py-2 rounded-full border transition-all cursor-pointer ${
             filter === "all"
               ? "bg-orange text-background border-orange font-bold"
@@ -41,7 +46,11 @@ export default function ProjectsSection() {
           <Grid className="w-3.5 h-3.5" /> All Projects ({projectsData.length})
         </button>
         <button
-          onClick={() => setFilter("featured")}
+          onClick={() => {
+            playClick();
+            setFilter("featured");
+          }}
+          onMouseEnter={() => playHover()}
           className={`flex items-center gap-1.5 text-xs font-barlow-condensed uppercase tracking-widest font-semibold px-4 py-2 rounded-full border transition-all cursor-pointer ${
             filter === "featured"
               ? "bg-orange text-background border-orange font-bold"

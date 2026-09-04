@@ -7,12 +7,16 @@ import { playClick, playHover } from "@/lib/soundEffects";
 import ProjectImageCarousel from "./ProjectImageCarousel";
 
 export default function ProjectCard({ project }: { project: ProjectItem }) {
+  const hasImages = project.images && project.images.length > 0;
+
   return (
     <div className="group relative rounded-2xl border border-white/10 bg-[#171616] hover:border-orange/50 transition-all duration-300 flex flex-col overflow-hidden hover:shadow-2xl hover:shadow-orange/5">
-      {/* Visual Header: Auto-crossfading screenshot carousel / placeholder */}
-      <div className="relative w-full h-52 sm:h-60 overflow-hidden bg-gradient-to-br from-[#1c1b1b] via-[#151414] to-[#0f0f0f] border-b border-white/5">
-        <ProjectImageCarousel images={project.images} alt={project.title} />
-      </div>
+      {/* Visual Header: Only rendered when project has screenshots */}
+      {hasImages && (
+        <div className="relative w-full h-52 sm:h-60 overflow-hidden bg-gradient-to-br from-[#1c1b1b] via-[#151414] to-[#0f0f0f] border-b border-white/5">
+          <ProjectImageCarousel images={project.images} alt={project.title} />
+        </div>
+      )}
 
       {/* Card Body */}
       <div className="p-6 flex flex-col flex-1 justify-between gap-5 text-left">

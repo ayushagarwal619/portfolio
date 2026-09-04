@@ -180,6 +180,64 @@ export const projectsData: ProjectItem[] = [
     },
   },
   {
+    id: "nimiza",
+    title: "NIMIZA",
+    featured: false,
+    status: "completed",
+    statusLabel: "Completed & Deployed",
+    tagline: "Turning screen time into meaningful learning time",
+    shortDescription:
+      "Interactive learning platform for kids aged 3–8 with animated reels, 6 interactive storybooks, mini-games, and habit trackers.",
+    fullDescription:
+      "Interactive learning platform for kids aged 3–8, built around three guide characters (Nino, Miko, Zara) teaching curiosity, kindness, and problem-solving through animated learning reels, six interactive storybooks, mini-games (Balloon Pop, Slide Puzzle), a daily routine/habit tracker, and 'mood rings' for emotional awareness.",
+    techStack: ["HTML5", "CSS3", "Vanilla JavaScript", "GitHub Pages"],
+    liveDemoUrl: "https://ayushagarwal619.github.io/NIMIZA",
+    githubUrl: "https://github.com/ayushagarwal619/NIMIZA-Application",
+    images: [
+      "/Images/Projects/NIMIZA/nimiza-landing.jpg",
+      "/Images/Projects/NIMIZA/nimiza-daily-routine.jpg",
+      "/Images/Projects/NIMIZA/nimiza-mood-ring.jpg",
+    ],
+    teamInfo: {
+      isTeam: false,
+      role: "Solo Developer",
+      note: "Connected to AIEEE Hackathon Nimiza Startup Pitch certificate",
+    },
+  },
+  {
+    id: "verifund",
+    title: "VeriFund",
+    featured: false,
+    status: "completed",
+    statusLabel: "Completed (Team Project)",
+    tagline: "Transparent, blockchain-verified crowdfunding",
+    shortDescription:
+      "Blockchain-based crowdfunding platform enabling verifiable donation tracking, fund utilization, and AI campaign verification.",
+    fullDescription:
+      "Blockchain-based crowdfunding platform enabling verifiable donation tracking and fund utilization, with AI-assisted campaign verification. Built as part of the Hackforge hackathon (Srijan '26, Jadavpur University).",
+    techStack: ["React", "Node.js", "Solidity", "JWT"],
+    liveDemoUrl: "https://verifund-xi.vercel.app/",
+    githubUrl: "https://github.com/ayushagarwal619/Verifund",
+    images: [
+      "/Images/Projects/VeriFund/verifund-landing.jpg",
+      "/Images/Projects/VeriFund/verifund-connect-wallet.jpg",
+    ],
+    teamInfo: {
+      isTeam: true,
+      teamName: "Team UdyamX",
+      role: "Frontend & Backend Integration",
+      contribution: "UI components, backend integration, performance optimization. (Forked from Dhirajchowdhury/Verifund)",
+    },
+    hackathon: {
+      name: "Hackforge (Srijan 2026)",
+      organizer: "CodeClub JUSL, Jadavpur University",
+      result: "Finalist",
+      certificateId: "hackforge-srijan-2026",
+    },
+    contributions:
+      "Engineered UI components, backend integration, and performance optimizations within Team UdyamX.",
+  },
+  {
     id: "roopantar",
     title: "RoopAntar",
     featured: false,
@@ -207,31 +265,6 @@ export const projectsData: ProjectItem[] = [
     },
   },
   {
-    id: "nimiza",
-    title: "NIMIZA",
-    featured: false,
-    status: "completed",
-    statusLabel: "Completed & Deployed",
-    tagline: "Turning screen time into meaningful learning time",
-    shortDescription:
-      "Interactive learning platform for kids aged 3–8 with animated reels, 6 interactive storybooks, mini-games, and habit trackers.",
-    fullDescription:
-      "Interactive learning platform for kids aged 3–8, built around three guide characters (Nino, Miko, Zara) teaching curiosity, kindness, and problem-solving through animated learning reels, six interactive storybooks, mini-games (Balloon Pop, Slide Puzzle), a daily routine/habit tracker, and 'mood rings' for emotional awareness.",
-    techStack: ["HTML5", "CSS3", "Vanilla JavaScript", "GitHub Pages"],
-    liveDemoUrl: "https://ayushagarwal619.github.io/NIMIZA",
-    githubUrl: "https://github.com/ayushagarwal619/NIMIZA-Application",
-    images: [
-      "/Images/Projects/NIMIZA/nimiza-landing.jpg",
-      "/Images/Projects/NIMIZA/nimiza-daily-routine.jpg",
-      "/Images/Projects/NIMIZA/nimiza-mood-ring.jpg",
-    ],
-    teamInfo: {
-      isTeam: false,
-      role: "Solo Developer",
-      note: "Connected to AIEEE Hackathon Nimiza Startup Pitch certificate",
-    },
-  },
-  {
     id: "ml-micro-projects",
     title: "ML Micro-Projects",
     featured: false,
@@ -250,38 +283,5 @@ export const projectsData: ProjectItem[] = [
       isTeam: false,
       role: "Solo Developer",
     },
-  },
-  {
-    id: "verifund",
-    title: "VeriFund",
-    featured: false,
-    status: "completed",
-    statusLabel: "Completed (Team Project)",
-    tagline: "Transparent, blockchain-verified crowdfunding",
-    shortDescription:
-      "Blockchain-based crowdfunding platform enabling verifiable donation tracking, fund utilization, and AI campaign verification.",
-    fullDescription:
-      "Blockchain-based crowdfunding platform enabling verifiable donation tracking and fund utilization, with AI-assisted campaign verification. Built as part of the Hackforge hackathon (Srijan '26, Jadavpur University).",
-    techStack: ["React", "Node.js", "Solidity", "JWT"],
-    liveDemoUrl: null,
-    githubUrl: "https://github.com/ayushagarwal619/Verifund",
-    images: [
-      "/Images/Projects/VeriFund/verifund-landing.jpg",
-      "/Images/Projects/VeriFund/verifund-connect-wallet.jpg",
-    ],
-    teamInfo: {
-      isTeam: true,
-      teamName: "Team UdyamX",
-      role: "Frontend & Backend Integration",
-      contribution: "UI components, backend integration, performance optimization. (Forked from Dhirajchowdhury/Verifund)",
-    },
-    hackathon: {
-      name: "Hackforge (Srijan 2026)",
-      organizer: "CodeClub JUSL, Jadavpur University",
-      result: "Finalist",
-      certificateId: "hackforge-srijan-2026",
-    },
-    contributions:
-      "Engineered UI components, backend integration, and performance optimizations within Team UdyamX.",
   },
 ];

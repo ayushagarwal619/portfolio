@@ -126,7 +126,7 @@ Currently, I'm focused on improving my development skills, strengthening my DSA 
 - Tagline: Transparent, blockchain-verified crowdfunding
 - Description: Blockchain-based crowdfunding platform enabling verifiable donation tracking and fund utilization, with AI-assisted campaign verification. Built as part of the Hackforge hackathon (Srijan '26, Jadavpur University).
 - Tech Stack: React, Node.js, Solidity, JWT
-- Live Demo: none found
+- Live Demo: https://verifund-xi.vercel.app/
 - GitHub: https://github.com/ayushagarwal619/Verifund (forked from Dhirajchowdhury/Verifund)
 - Team/Solo: **Team project — Team UdyamX.** Your contribution: UI components, backend integration, performance optimization. Must be labeled as a team project, not solo work.
 - Hackathon association: Hackforge, Srijan 2026 (Finalist) — see Certificates
