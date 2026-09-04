@@ -30,32 +30,32 @@ function getScatterOffsets(
   viewportWidth: number
 ) {
   // Deterministic seed based on category and item index
-  const seed = catIdx * 19.3 + itemIdx * 7.7 + 3.14;
-  const angle = ((seed * 57.3) % 360) * (Math.PI / 180);
+  const seed = catIdx * 17.1 + itemIdx * 7.3 + 3.14;
+  const angle = ((seed * 53.7) % 360) * (Math.PI / 180);
 
-  // Controlled, elegant travel distances to prevent viewport overflow
-  let maxDistance = 70;
-  let maxRotation = 10;
+  // Controlled, intentional offsets — direct travel without floatiness
+  let maxDistance = 42;
+  let maxRotation = 6;
 
   if (viewportWidth < 640) {
-    // Mobile: restrained travel to keep elements safely within card boundaries
-    maxDistance = 18;
-    maxRotation = 5;
+    // Mobile: tight offset to maintain clean visual containment
+    maxDistance = 14;
+    maxRotation = 2;
   } else if (viewportWidth < 1024) {
     // Tablet
-    maxDistance = 38;
-    maxRotation = 8;
+    maxDistance = 26;
+    maxRotation = 4;
   }
 
-  const radiusNorm = 0.5 + ((seed % 10) / 20); // 0.5 to 1.0
+  const radiusNorm = 0.6 + ((seed % 10) / 25); // 0.6 to 1.0
   const distance = maxDistance * radiusNorm;
 
   const x = Math.round(Math.cos(angle) * distance);
-  const y = Math.round(Math.sin(angle) * (distance * 0.8));
+  const y = Math.round(Math.sin(angle) * (distance * 0.75));
 
-  const rotation = Math.round(((seed * 5) % (maxRotation * 2)) - maxRotation);
-  const scale = 0.94 + (((seed * 3) % 10) / 100); // 0.94 to 1.03 (never shrinks drastically)
-  const opacity = 0.55 + (((seed * 7) % 25) / 100); // 0.55 to 0.80
+  const rotation = Math.round(((seed * 3) % (maxRotation * 2)) - maxRotation);
+  const scale = 0.96 + (((seed * 2) % 8) / 100); // 0.96 to 1.03
+  const opacity = 0.8 + (((seed * 5) % 18) / 100); // 0.80 to 0.98: vivid & visible from frame 1
 
   return { x, y, rotation, scale, opacity };
 }
@@ -117,30 +117,30 @@ export default function TechStackSection() {
         });
       });
 
-      // 2. Coordinated ScrollTrigger timeline:
-      // Category cards reveal -> Controlled intelligent assembly of technology items
+      // 2. Scroll-driven assembly timeline tied directly to user scroll progress
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top 82%",
-          once: true,
+          start: "top 85%",
+          end: "center 50%",
+          scrub: 1.2,
         },
       });
 
-      // Phase 1: Destination category cards become visible and settled
+      // Category cards reveal gently as user scrolls into the section
       tl.fromTo(
         cards,
-        { opacity: 0, y: 18 },
+        { opacity: 0.35, y: 16 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.55,
-          stagger: 0.06,
-          ease: "power2.out",
-        }
+          duration: 0.3,
+          ease: "none",
+        },
+        0
       );
 
-      // Phase 2: Gentle attraction & intelligent assembly into natural slots
+      // Technology items smoothly converge into exact final positions based on scroll
       tl.to(
         items,
         {
@@ -149,22 +149,20 @@ export default function TechStackSection() {
           rotation: 0,
           scale: 1,
           opacity: 1,
-          duration: 0.85,
-          ease: "power3.out",
-          stagger: (_index, target) => {
-            const catIdx = Number(target.dataset.catIndex || 0);
-            const itemIdx = Number(target.dataset.itemIndex || 0);
-            // Organic, synchronized overlap across categories
-            return catIdx * 0.06 + itemIdx * 0.022;
+          duration: 1,
+          ease: "power2.out",
+          stagger: {
+            each: 0.005,
+            from: "start",
           },
-          // Clear transform attribute once assembly completes so CSS hover transforms operate cleanly
-          clearProps: "transform",
         },
-        "-=0.3"
+        0.05
       );
     },
     { scope: containerRef }
   );
+
+
 
   return (
     <div
