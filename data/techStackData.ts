@@ -1,6 +1,6 @@
 /**
  * Tech Stack Data Layer
- * Source of truth: CONTENT.md
+ * Source of truth: Technical Stack Specification
  */
 
 export interface TechCategory {
@@ -13,49 +13,38 @@ export interface TechCategory {
 
 export const techStackData: TechCategory[] = [
   {
-    id: "languages",
-    category: "Languages",
+    id: "programming-languages",
+    category: "Programming Languages",
+    items: ["C", "C++", "Java", "Python", "JavaScript", "TypeScript"],
+  },
+  {
+    id: "web-technologies",
+    category: "Web Technologies",
     items: [
-      "C",
-      "C++",
-      "Java",
-      "Python",
-      "JavaScript",
-      "TypeScript",
       "HTML5",
       "CSS3",
+      "React.js",
+      "Next.js",
+      "Node.js",
+      "Express.js",
     ],
   },
   {
-    id: "frontend",
-    category: "Frontend",
-    items: ["React.js", "Next.js", "Tailwind CSS", "Bootstrap", "Streamlit"],
-  },
-  {
-    id: "backend",
-    category: "Backend",
-    items: ["Node.js", "Express.js", "Flask"],
-  },
-  {
-    id: "database",
-    category: "Database",
-    items: ["MySQL", "MongoDB", "Firebase", "Supabase"],
-  },
-  {
-    id: "ai-ml-ds",
-    category: "AI / ML / Data Science",
+    id: "frameworks-libraries",
+    category: "Frameworks & Libraries",
     items: [
-      "PyTorch",
+      "Tailwind CSS",
+      "Bootstrap",
+      "Flask",
+      "Streamlit",
       "OpenCV",
-      "MediaPipe",
-      "Scikit-Learn",
-      "NumPy",
-      "Pandas",
+      "Scikit-learn",
+      "PyTorch",
     ],
   },
   {
-    id: "tools-devops",
-    category: "Tools / DevOps",
+    id: "tools-platforms",
+    category: "Tools & Platforms",
     items: [
       "Git",
       "GitHub",
@@ -63,23 +52,25 @@ export const techStackData: TechCategory[] = [
       "VS Code",
       "npm",
       "Vite",
-      "Vercel",
-      "Render",
-      "Figma",
       "Docker",
-      "Kubernetes",
-      "MySQL Workbench",
+      "Figma",
+      "Render",
     ],
   },
   {
-    id: "currently-learning",
-    category: "Currently Learning",
-    isUnconfirmed: true,
-    description: "Unconfirmed — verify before publishing",
+    id: "databases-cloud",
+    category: "Databases & Cloud",
+    items: ["MySQL", "MongoDB", "Supabase", "Firebase"],
+  },
+  {
+    id: "soft-skills",
+    category: "Soft Skills",
     items: [
-      "Advanced DSA & System Design",
-      "Generative AI / RAG / AI Agents",
-      "Neural Style Transfer (AdaIN)",
+      "Analytical Thinking",
+      "Problem Solving",
+      "Team Collaboration",
+      "Adaptability",
+      "Quick Learning",
     ],
   },
 ];
