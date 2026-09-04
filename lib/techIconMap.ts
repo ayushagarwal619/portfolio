@@ -3,11 +3,11 @@ import type { IconType } from "react-icons";
 import {
   SiC,
   SiCplusplus,
-  SiOpenjdk,
   SiPython,
   SiJavascript,
   SiTypescript,
   SiHtml5,
+
   SiCss,
   SiReact,
   SiNextdotjs,
@@ -34,6 +34,7 @@ import {
   SiDocker,
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
+import { FaJava } from "react-icons/fa6";
 import { Brain, Puzzle, Users, Compass, Zap, Code2 } from "lucide-react";
 
 // Alias for CSS3 and Visual Studio Code to match Simple Icons specifications
@@ -48,8 +49,9 @@ export const techIconMap: Record<string, TechIconType> = {
   // Programming Languages
   C: SiC,
   "C++": SiCplusplus,
-  Java: SiOpenjdk,
+  Java: FaJava,
   Python: SiPython,
+
   JavaScript: SiJavascript,
   TypeScript: SiTypescript,
 
