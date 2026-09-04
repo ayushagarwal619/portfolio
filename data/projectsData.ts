@@ -261,7 +261,10 @@ export const projectsData: ProjectItem[] = [
     techStack: ["React", "Node.js", "Solidity", "JWT"],
     liveDemoUrl: null,
     githubUrl: "https://github.com/ayushagarwal619/Verifund",
-    images: [],
+    images: [
+      "/Images/Projects/VeriFund/verifund-landing.jpg",
+      "/Images/Projects/VeriFund/verifund-connect-wallet.jpg",
+    ],
     teamInfo: {
       isTeam: true,
       teamName: "Team UdyamX",
