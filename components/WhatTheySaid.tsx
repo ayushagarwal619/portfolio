@@ -36,7 +36,41 @@ export default function WhatTheySaid({
   const [direction, setDirection] = useState<"next" | "prev">("next");
   const [isPlaying, setIsPlaying] = useState(true);
   const [modalItem, setModalItem] = useState<Testimonial | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const handleCloseModal = () => {
+    playClick();
+    setIsModalVisible(false);
+    setTimeout(() => {
+      setModalItem(null);
+    }, 200);
+  };
+
+  useEffect(() => {
+    if (modalItem) {
+      const raf = requestAnimationFrame(() => {
+        setIsModalVisible(true);
+      });
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          handleCloseModal();
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        cancelAnimationFrame(raf);
+        document.body.style.overflow = originalOverflow;
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    } else {
+      setIsModalVisible(false);
+    }
+  }, [modalItem]);
 
   const sectionRef = useRef<HTMLElement>(null);
   const currentContentRef = useRef<HTMLDivElement>(null);
@@ -411,8 +445,10 @@ export default function WhatTheySaid({
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md animate-in fade-in duration-300 overflow-hidden"
-            onClick={() => setModalItem(null)}
+            className={`fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/80 backdrop-blur-md transition-opacity duration-200 overflow-hidden ${
+              isModalVisible ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={handleCloseModal}
           >
             <div
               className="relative w-full max-w-4xl bg-[#131212] border border-white/15 rounded-2xl p-6 sm:p-8 md:p-10 shadow-2xl overflow-y-auto max-h-[85vh] flex flex-col gap-6 text-left"
@@ -420,7 +456,7 @@ export default function WhatTheySaid({
             >
               {/* Close Button */}
               <button
-                onClick={() => { playClick(); setModalItem(null); }}
+                onClick={handleCloseModal}
                 aria-label="Close modal"
                 className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 rounded-full bg-white/5 border border-white/15 text-foreground flex items-center justify-center hover:bg-orange hover:border-orange hover:text-white transition-all cursor-pointer z-10"
               >

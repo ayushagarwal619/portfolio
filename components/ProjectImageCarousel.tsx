@@ -11,6 +11,8 @@ interface ProjectImageCarouselProps {
   /** How long each image stays on screen before crossfading to the next. Default 3000ms. */
   intervalMs?: number;
   className?: string;
+  /** Optional click callback with the currently active image index. */
+  onImageClick?: (index: number) => void;
 }
 
 /**
@@ -28,6 +30,7 @@ export default function ProjectImageCarousel({
   alt,
   intervalMs = 3000,
   className = "",
+  onImageClick,
 }: ProjectImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -59,9 +62,10 @@ export default function ProjectImageCarousel({
 
   return (
     <div
-      className={`relative w-full h-full overflow-hidden ${className}`}
+      className={`relative w-full h-full overflow-hidden ${onImageClick ? "cursor-pointer" : ""} ${className}`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onClick={() => onImageClick?.(activeIndex)}
     >
       {images.map((src, index) => (
         <Image

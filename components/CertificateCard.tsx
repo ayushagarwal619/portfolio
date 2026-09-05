@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import { CertificateItem } from "@/data/certificatesData";
 import { Award, CheckCircle2, ExternalLink, Copy, Check, QrCode, ShieldCheck, Maximize2, X } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
@@ -10,6 +11,40 @@ export default function CertificateCard({ cert }: { cert: CertificateItem }) {
   const [copied, setCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleCloseModal = () => {
+    playClick();
+    setIsModalVisible(false);
+    setTimeout(() => {
+      setShowModal(false);
+    }, 200);
+  };
+
+  useEffect(() => {
+    if (showModal) {
+      const raf = requestAnimationFrame(() => {
+        setIsModalVisible(true);
+      });
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          handleCloseModal();
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        cancelAnimationFrame(raf);
+        document.body.style.overflow = originalOverflow;
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    } else {
+      setIsModalVisible(false);
+    }
+  }, [showModal]);
 
   const hasImage = !!cert.imagePath && !imgError;
 
@@ -173,10 +208,12 @@ export default function CertificateCard({ cert }: { cert: CertificateItem }) {
       </div>
 
       {/* High-Resolution Certificate Modal / Lightbox */}
-      {showModal && hasImage && (
+      {showModal && hasImage && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
-          onClick={() => setShowModal(false)}
+          className={`fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md transition-opacity duration-200 ${
+            isModalVisible ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={handleCloseModal}
         >
           <div
             className="relative max-w-4xl w-full max-h-[90vh] bg-[#141313] border border-white/20 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4"
@@ -194,7 +231,7 @@ export default function CertificateCard({ cert }: { cert: CertificateItem }) {
               </div>
 
               <button
-                onClick={() => setShowModal(false)}
+                onClick={handleCloseModal}
                 className="w-9 h-9 rounded-full bg-white/5 hover:bg-orange text-foreground hover:text-background border border-white/15 flex items-center justify-center transition-all cursor-pointer"
                 aria-label="Close modal"
               >
@@ -229,7 +266,8 @@ export default function CertificateCard({ cert }: { cert: CertificateItem }) {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

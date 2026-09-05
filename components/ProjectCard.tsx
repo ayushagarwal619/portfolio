@@ -1,20 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ProjectItem } from "@/data/projectsData";
-import { ExternalLink, Github, Users, Sparkles } from "lucide-react";
+import { ExternalLink, Github, Users, Sparkles, Maximize2 } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
 import ProjectImageCarousel from "./ProjectImageCarousel";
+import ProjectImageLightbox from "./ProjectImageLightbox";
 
 export default function ProjectCard({ project }: { project: ProjectItem }) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const hasImages = project.images && project.images.length > 0;
 
   return (
     <div className="group relative rounded-2xl border border-white/10 bg-[#171616] hover:border-orange/50 transition-all duration-300 flex flex-col overflow-hidden hover:shadow-2xl hover:shadow-orange/5">
-      {/* Visual Header: Only rendered when project has screenshots */}
+      {/* Visual Header: Only rendered when project has screenshots.
+          Note on aspect ratio: Standard 16:9 (aspect-video) is used for project preview
+          cards to cleanly present desktop UI screenshots without aggressive vertical cropping,
+          while full-size uncropped captures can be viewed in high resolution via the lightbox modal. */}
       {hasImages && (
-        <div className="relative w-full h-52 sm:h-60 overflow-hidden bg-gradient-to-br from-[#1c1b1b] via-[#151414] to-[#0f0f0f] border-b border-white/5">
-          <ProjectImageCarousel images={project.images} alt={project.title} />
+        <div
+          onClick={() => {
+            playClick();
+            setLightboxIndex(0);
+          }}
+          className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-[#1c1b1b] via-[#151414] to-[#0f0f0f] border-b border-white/5 cursor-pointer group/img"
+        >
+          <ProjectImageCarousel
+            images={project.images}
+            alt={project.title}
+            onImageClick={(idx) => {
+              playClick();
+              setLightboxIndex(idx);
+            }}
+          />
+          <div className="absolute inset-0 z-20 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-xs font-barlow-condensed tracking-wider uppercase font-bold text-white backdrop-blur-[2px] pointer-events-none">
+            <Maximize2 className="w-4 h-4 text-orange" /> Click to View
+          </div>
         </div>
       )}
 
@@ -96,6 +117,16 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
           )}
         </div>
       </div>
+
+      {/* Full Resolution Screenshot Lightbox */}
+      {lightboxIndex !== null && hasImages && (
+        <ProjectImageLightbox
+          images={project.images}
+          initialIndex={lightboxIndex}
+          alt={project.title}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }
