@@ -4,7 +4,6 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { bioContent } from "@/data/bioData";
 import { ArrowUpRight } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
 import { animateDrawSVG } from "@/lib/drawSvg";
@@ -17,30 +16,33 @@ if (typeof window !== "undefined") {
 const STATS = [
   {
     badge: "01",
-    label: "Shipped Products",
-    target: 3,
+    label: "Products Built",
+    target: 7,
     suffix: "+",
-    desc: "SmartAttend, GymGuru, JanSewa",
+    subtitle: "AI & Full-Stack Applications",
+    desc: "SmartAttend, GymGuru, ResuMatch, RoopAntar, JanSewa, Nimiza & Verifund",
   },
   {
     badge: "02",
     label: "Hackathons & Challenges",
-    target: 12,
+    target: 5,
     suffix: "+",
-    desc: "National & Global Events",
+    subtitle: "National & Global Events",
+    desc: "IEMHACKS, Adobe Univ, NextGen USA & JU Srijan '26 Finalist",
   },
   {
     badge: "03",
-    label: "Verified Milestones",
+    label: "Milestones & Programs",
     target: 15,
     suffix: "+",
-    desc: "Certifications & Simulations",
+    subtitle: "Certifications & Industry Programs",
+    desc: "Co-Founded KidGuides (Hult Prize), Goldman Sachs & Tata Simulations",
   },
 ];
 
 const TAGLINES = [
-  "MORE THAN CODE",
-  "PEOPLE × IDEAS × TECHNOLOGY × IMPACT",
+  "BUILD · ITERATE · SCALE",
+  "AI × FULL STACK × PRODUCTS",
   "DISCIPLINE BUILDS FREEDOM",
 ];
 
@@ -377,14 +379,14 @@ export default function AboutSection() {
           {/* Pill Badge */}
           <div
             ref={pillRef}
-            className="inline-flex items-center gap-2.5 rounded-full border border-orange/40 bg-orange/5 px-4 py-1.5 text-xs font-barlow-condensed font-semibold uppercase tracking-[0.2em] text-foreground shadow-sm"
+            className="inline-flex items-center gap-2.5 rounded-full border border-orange/40 bg-orange/5 px-4.5 py-1.5 text-xs font-barlow-condensed font-semibold uppercase tracking-[0.2em] text-foreground shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full bg-orange animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite] shadow-[0_0_8px_rgba(249,52,52,0.8)]" />
-            <span>STUDENT · DEVELOPER · PROBLEM SOLVER</span>
+            <span className="w-2 h-2 rounded-full bg-orange animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite] shadow-[0_0_8px_rgba(249,52,52,0.8)] shrink-0" />
+            <span>BUILDER · AI DEVELOPER · PROBLEM SOLVER</span>
           </div>
 
           <p className="eyebrow-text font-barlow-condensed text-xs sm:text-sm tracking-[.35rem] sm:tracking-[.5rem] uppercase text-orange font-bold">
-            BACKGROUND & PHILOSOPHY
+            BACKGROUND &amp; PHILOSOPHY
           </p>
 
           <ScrollRevealText triggerRef={headerRef}>
@@ -401,9 +403,8 @@ export default function AboutSection() {
             </h2>
           </ScrollRevealText>
 
-          <p className="subtitle-text max-w-xl text-sm sm:text-base text-foreground/70 font-normal leading-relaxed">
-            Bridging academic foundations with real-world engineering, startup innovation, and
-            scalable AI solutions.
+          <p className="subtitle-text max-w-2xl text-sm sm:text-base text-foreground/75 font-normal leading-relaxed">
+            Engineering intelligent systems, full-stack applications, and scalable products from first principles.
           </p>
         </div>
 
@@ -412,52 +413,46 @@ export default function AboutSection() {
           ref={mainCardRef}
           className="rounded-2xl border border-white/10 bg-[#171616] p-7 sm:p-10 flex flex-col gap-8 shadow-xl relative overflow-hidden group hover:border-white/20 transition-all duration-300"
         >
-          {/* Statement Headline with Word-by-Word & Delayed Color Arrival */}
+          {/* Headline: Contextual & Bold */}
           <h3
             ref={statementRef}
             className="text-2xl sm:text-3xl md:text-4xl font-bold font-barlow-condensed uppercase tracking-wide text-foreground leading-snug"
           >
             <span className="inline-block overflow-hidden mr-[0.25em]">
-              <span className="statement-word inline-block">Building</span>
+              <span className="statement-word inline-block">TURNING</span>
             </span>
             <span className="inline-block overflow-hidden mr-[0.25em]">
-              <span className="statement-word inline-block">at</span>
+              <span className="statement-word inline-block">IDEAS</span>
             </span>
             <span className="inline-block overflow-hidden mr-[0.25em]">
-              <span className="statement-word inline-block">the</span>
-            </span>
-            <span className="inline-block overflow-hidden mr-[0.25em]">
-              <span className="statement-word inline-block">intersection</span>
-            </span>
-            <span className="inline-block overflow-hidden mr-[0.25em]">
-              <span className="statement-word inline-block">of</span>
+              <span className="statement-word inline-block">INTO</span>
             </span>
             <span className="inline-block overflow-hidden mr-[0.25em]">
               <span className="statement-word statement-highlight inline-block font-bold">
-                AI,
-              </span>
-            </span>
-            <span className="inline-block overflow-hidden mr-[0.25em]">
-              <span className="statement-word statement-highlight inline-block font-bold">
-                Systems
+                AI
               </span>
             </span>
             <span className="inline-block overflow-hidden mr-[0.25em]">
               <span className="statement-word inline-block">&amp;</span>
             </span>
+            <span className="inline-block overflow-hidden mr-[0.25em]">
+              <span className="statement-word statement-highlight inline-block font-bold">
+                FULL-STACK
+              </span>
+            </span>
             <span className="inline-block overflow-hidden">
               <span className="statement-word statement-highlight inline-block font-bold">
-                Products
+                PRODUCTS
               </span>
             </span>
           </h3>
 
-          {/* Bio Paragraph */}
+          {/* Authentic Personal Story Bio */}
           <p
             ref={bioRef}
-            className="text-base sm:text-lg text-foreground/80 leading-relaxed font-normal"
+            className="text-base sm:text-lg text-foreground/85 leading-relaxed font-normal"
           >
-            {bioContent.shortBio}
+            I&apos;m <strong className="text-white font-semibold">Ayush Kumar Agarwal</strong> — a Computer Science &amp; Business Systems student at <span className="text-orange/90 font-medium">Heritage Institute of Technology, Kolkata</span>, and a developer who learns by actually building real things. From AI biometrics and real-time pose tracking to full-stack platforms, I focus on turning complex challenges into practical, usable software. Driven by a deep curiosity for AI engineering, systems design, and startup innovation, I&apos;m constantly experimenting, refining my code, and building products designed to scale.
           </p>
 
           {/* Education Info Row */}
@@ -465,11 +460,11 @@ export default function AboutSection() {
             ref={eduCardRef}
             className="pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm text-foreground/70"
           >
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-orange/10 border border-orange/20 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-orange/10 border border-orange/25 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(249,52,52,0.15)]">
                 <svg
                   viewBox="0 0 24 24"
-                  className="w-5 h-5 text-orange"
+                  className="w-5.5 h-5.5 text-orange"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -485,7 +480,7 @@ export default function AboutSection() {
                 </svg>
               </div>
               <div>
-                <strong className="text-foreground font-semibold block text-sm sm:text-base">
+                <strong className="text-foreground font-semibold text-base block">
                   Computer Science &amp; Business Systems
                 </strong>
                 <p className="text-xs text-foreground/50 uppercase tracking-wider font-barlow-condensed mt-0.5">
@@ -494,14 +489,14 @@ export default function AboutSection() {
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.03] text-xs font-barlow-condensed uppercase tracking-wider text-foreground/60">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
-              <span>B.Tech Undergrad</span>
+            <div className="inline-flex items-center gap-2 self-start sm:self-auto px-4 py-1.5 rounded-full border border-white/15 bg-white/[0.04] text-xs font-barlow-condensed uppercase tracking-widest text-foreground/80 font-semibold shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)] shrink-0" />
+              <span>B.Tech Undergraduate</span>
             </div>
           </div>
         </div>
 
-        {/* 3 Numbered Stat Cards (Balanced 3-Column Grid) */}
+        {/* 3 Story-Driven Highlight Cards (Products Built, Hackathons, Milestones) */}
         <div ref={statsContainerRef} className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {STATS.map((stat, index) => (
             <div
@@ -517,7 +512,7 @@ export default function AboutSection() {
                   ref={(el) => {
                     statBadgeRefs.current[index] = el;
                   }}
-                  className="font-barlow-condensed text-xs font-bold text-foreground/30 border border-white/10 rounded-full px-2.5 py-1 uppercase tracking-wider"
+                  className="font-barlow-condensed text-xs font-bold text-foreground/40 border border-white/10 rounded-full px-3 py-1 uppercase tracking-wider bg-white/[0.02]"
                 >
                   {stat.badge}
                 </span>
@@ -539,6 +534,9 @@ export default function AboutSection() {
                 <h4 className="text-base sm:text-lg font-bold font-barlow-condensed uppercase tracking-wider text-foreground mb-1">
                   {stat.label}
                 </h4>
+                <div className="inline-block px-2.5 py-0.5 rounded bg-orange/10 text-orange text-[10px] font-mono uppercase tracking-wider mb-2 font-medium">
+                  {stat.subtitle}
+                </div>
                 <p className="text-xs text-foreground/50 font-mono leading-relaxed">
                   {stat.desc}
                 </p>
