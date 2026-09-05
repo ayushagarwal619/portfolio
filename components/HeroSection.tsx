@@ -5,7 +5,13 @@ import { heroContent, assetsConfig, socialLinks } from "@/data/bioData";
 import { Download, Rocket, Github, Linkedin, Mail, ChevronDown } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
 
+import TextParticleCanvas from "./TextParticleCanvas";
+
 export default function HeroSection() {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const span1Ref = React.useRef<HTMLSpanElement>(null);
+  const span2Ref = React.useRef<HTMLSpanElement>(null);
+
   const handleResumeDownload = () => {
     playClick();
   };
@@ -136,12 +142,17 @@ export default function HeroSection() {
         </div>
 
         {/* 2. Large Wide Personal Wordmark (AYUSH KUMAR in white, AGARWAL in red with accent flare) */}
-        <div className="relative w-full flex flex-col items-center mt-1">
-          <h1 className="w-full text-center font-bigger-display italic uppercase leading-[0.88] tracking-[0.04em] sm:tracking-[0.07em] md:tracking-[0.1em] text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] 2xl:text-[7.25rem] select-none">
-            <span className="text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.9)]">
+        <div ref={containerRef} className="relative w-full flex flex-col items-center mt-1">
+          <TextParticleCanvas
+            containerRef={containerRef}
+            span1Ref={span1Ref}
+            span2Ref={span2Ref}
+          />
+          <h1 className="w-full text-center font-bigger-display italic uppercase leading-[0.88] tracking-[0.04em] sm:tracking-[0.07em] md:tracking-[0.1em] text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] 2xl:text-[7.25rem] select-none relative z-0">
+            <span ref={span1Ref} className="text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.9)]">
               AYUSH KUMAR{" "}
             </span>
-            <span className="relative inline-block text-orange drop-shadow-[0_0_35px_rgba(249,52,52,0.5)]">
+            <span ref={span2Ref} className="relative inline-block text-orange drop-shadow-[0_0_35px_rgba(249,52,52,0.5)]">
               AGARWAL
               {/* Subtle red light flare accent underneath AGARWAL matching reference image */}
               <span className="absolute -bottom-2 right-0 w-32 sm:w-48 h-[2px] bg-gradient-to-r from-transparent via-orange to-transparent opacity-80 pointer-events-none" />
