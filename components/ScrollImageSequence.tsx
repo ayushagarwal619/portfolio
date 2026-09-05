@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const FRAME_COUNT = 100;
-const PRELOAD_BATCH_SIZE = 4;
+const PRELOAD_BATCH_SIZE = 10;
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -45,6 +45,10 @@ export default function ScrollImageSequence() {
     const drawFrame = (image: HTMLImageElement) => {
       if (isCancelled || !image.naturalWidth || !image.naturalHeight) return;
 
+      // Enable high-quality image smoothing for crisp canvas rendering
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       const scale = Math.max(
@@ -73,22 +77,35 @@ export default function ScrollImageSequence() {
     };
 
     const resizeCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // Support up to 2x DPR (Retina) for sharp resolution without performance degradation
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(window.innerWidth * dpr);
       canvas.height = Math.round(window.innerHeight * dpr);
       canvas.style.width = `${window.innerWidth}px`;
       canvas.style.height = `${window.innerHeight}px`;
+
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+
       drawCurrentFrame();
     };
 
     const loadFrame = (index: number) =>
       new Promise<HTMLImageElement>((resolve) => {
+        if (images[index]?.complete && images[index].naturalWidth > 0) {
+          resolve(images[index]);
+          return;
+        }
+
         const image = new Image();
         image.decoding = "async";
         images[index] = image;
 
         const finish = () => {
           pendingResolves.delete(finish);
+          if (!isCancelled && Math.abs(index - currentFrameRef.current) <= 1) {
+            drawCurrentFrame();
+          }
           resolve(image);
         };
         pendingResolves.add(finish);
@@ -164,20 +181,20 @@ export default function ScrollImageSequence() {
 
   return (
     <>
-      {/* High Visibility Scroll Sequence Portrait (0.62 Opacity) */}
+      {/* Crisp, Sharp Background Image Sequence (Opacity 0.82) */}
       <canvas
         ref={canvasRef}
         aria-hidden="true"
-        className="fixed inset-0 z-0 h-full w-full pointer-events-none opacity-[0.62] brightness-[1.08] contrast-[1.10] saturate-[1.05]"
+        className="fixed inset-0 z-0 h-full w-full pointer-events-none opacity-[0.82] brightness-[1.03] contrast-[1.08] saturate-[1.05]"
       />
-      {/* Dark Vignette & Gradient Overlays for Center Text Contrast */}
+      {/* Balanced Vignette & Overlay for Readability and Depth */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-background/40 via-transparent to-background/85"
+        className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-background/30 via-transparent to-background/80"
       />
       <div
         aria-hidden="true"
-        className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_transparent_40%,_var(--background)_95%)]"
+        className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_transparent_50%,_var(--background)_95%)]"
       />
     </>
   );
