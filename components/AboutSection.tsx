@@ -25,7 +25,7 @@ const STATS = [
   {
     badge: "02",
     label: "Hackathons & Challenges",
-    target: 5,
+    target: 12,
     suffix: "+",
     subtitle: "National & Global Events",
     desc: "IEMHACKS, Adobe Univ, NextGen USA & JU Srijan '26 Finalist",
