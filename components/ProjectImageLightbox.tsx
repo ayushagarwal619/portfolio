@@ -23,6 +23,10 @@ export default function ProjectImageLightbox({
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setCurrentIndex(initialIndex || 0);
+  }, [initialIndex]);
+
   // Mount animation: mount with opacity-0 then transition to opacity-100
   useEffect(() => {
     setMounted(true);
@@ -64,7 +68,7 @@ export default function ProjectImageLightbox({
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = originalOverflow || "";
     };
   }, []);
 

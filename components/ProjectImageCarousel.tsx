@@ -73,21 +73,26 @@ export default function ProjectImageCarousel({
           src={src}
           alt={`${alt} — screenshot ${index + 1}`}
           fill
-          priority={index === 0}
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover transition-opacity duration-700 ease-in-out"
+          className="object-cover object-center transition-opacity duration-700 ease-in-out pointer-events-none"
           style={{ opacity: index === activeIndex ? 1 : 0 }}
         />
       ))}
 
-      {/* Progress dots — only when there's more than one frame to show */}
+      {/* Progress dots — interactive so users can manually cycle frames */}
       {isCycling && (
-        <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
+        <div className="absolute bottom-3 right-3 z-30 flex items-center gap-1.5">
           {images.map((_, index) => (
-            <span
+            <button
               key={index}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                index === activeIndex ? "w-4 bg-orange" : "w-1.5 bg-foreground/40"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveIndex(index);
+              }}
+              aria-label={`Go to image ${index + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer p-0 border-0 ${
+                index === activeIndex ? "w-4 bg-orange" : "w-1.5 bg-foreground/40 hover:bg-foreground/70"
               }`}
             />
           ))}

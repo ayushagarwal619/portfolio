@@ -64,7 +64,7 @@ export default function WhatTheySaid({
 
       return () => {
         cancelAnimationFrame(raf);
-        document.body.style.overflow = originalOverflow;
+        document.body.style.overflow = originalOverflow || "";
         window.removeEventListener("keydown", handleKeyDown);
       };
     } else {

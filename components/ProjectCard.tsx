@@ -14,17 +14,12 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
   return (
     <div className="group relative rounded-2xl border border-white/10 bg-[#171616] hover:border-orange/50 transition-all duration-300 flex flex-col overflow-hidden hover:shadow-2xl hover:shadow-orange/5">
       {/* Visual Header: Only rendered when project has screenshots.
-          Note on aspect ratio: Standard 16:9 (aspect-video) is used for project preview
-          cards to cleanly present desktop UI screenshots without aggressive vertical cropping,
-          while full-size uncropped captures can be viewed in high resolution via the lightbox modal. */}
+          Note on aspect ratio: Screenshots closer to a 16:9 aspect ratio (aspect-video)
+          will crop the least. Full-page scroll captures (very tall images) will still lose
+          significant content even with this fix, so viewport-only screenshots (no scrolling)
+          should be used when adding real project images later. */}
       {hasImages && (
-        <div
-          onClick={() => {
-            playClick();
-            setLightboxIndex(0);
-          }}
-          className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-[#1c1b1b] via-[#151414] to-[#0f0f0f] border-b border-white/5 cursor-pointer group/img"
-        >
+        <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-[#1c1b1b] via-[#151414] to-[#0f0f0f] border-b border-white/5 cursor-pointer group/img">
           <ProjectImageCarousel
             images={project.images}
             alt={project.title}
