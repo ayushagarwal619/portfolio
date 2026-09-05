@@ -137,8 +137,10 @@ export const projectsData: ProjectItem[] = [
       "/Images/Projects/JanSewa/jansewa-grievance.png",
     ],
     teamInfo: {
-      isTeam: false,
-      role: "Solo Developer",
+      isTeam: true,
+      teamName: "Kal Ka Naya Yug",
+      role: "Full-Stack Developer",
+      contribution: "Built during IEMHACKS · Team: Kal Ka Naya Yug",
     },
     hackathon: {
       name: "IEMHACKS 4.0",
@@ -206,8 +208,10 @@ export const projectsData: ProjectItem[] = [
       "/Images/Projects/NIMIZA/nimiza-mood-ring.jpg",
     ],
     teamInfo: {
-      isTeam: false,
-      role: "Solo Developer",
+      isTeam: true,
+      teamName: "Tensor Titans",
+      role: "Full-Stack Developer",
+      contribution: "Built during DAKSHH HITK Tech Fest · Team: Tensor Titans",
       note: "Connected to AIEEE Hackathon Nimiza Startup Pitch certificate",
     },
   },
@@ -222,7 +226,20 @@ export const projectsData: ProjectItem[] = [
       "Blockchain-based crowdfunding platform enabling verifiable donation tracking, fund utilization, and AI campaign verification.",
     fullDescription:
       "Blockchain-based crowdfunding platform enabling verifiable donation tracking and fund utilization, with AI-assisted campaign verification. Built as part of the Hackforge hackathon (Srijan '26, Jadavpur University).",
-    techStack: ["React", "Node.js", "Solidity", "JWT"],
+    techStack: [
+      "React",
+      "Vite",
+      "Tailwind CSS",
+      "Node.js",
+      "Express.js",
+      "Solidity",
+      "Hardhat",
+      "Ethereum",
+      "ethers.js",
+      "OpenZeppelin",
+      "MetaMask",
+      "Google Maps API",
+    ],
     liveDemoUrl: "https://verifund-xi.vercel.app/",
     githubUrl: "https://github.com/ayushagarwal619/Verifund",
     images: [
@@ -233,7 +250,7 @@ export const projectsData: ProjectItem[] = [
       isTeam: true,
       teamName: "Team UdyamX",
       role: "Frontend & Backend Integration",
-      contribution: "UI components, backend integration, performance optimization. (Forked from Dhirajchowdhury/Verifund)",
+      contribution: "Built during Hackforge (Srijan 2026) · Team: Team UdyamX",
     },
     hackathon: {
       name: "Hackforge (Srijan 2026)",

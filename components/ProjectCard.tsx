@@ -75,11 +75,17 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
 
         {/* Team / Hackathon note if present */}
         {project.teamInfo.isTeam && project.teamInfo.contribution && (
-          <div className="text-xs font-barlow-condensed uppercase tracking-wider text-foreground/60 bg-white/[0.03] p-2.5 rounded-lg border border-white/5 flex items-center gap-1.5">
+          <div className="text-xs font-barlow-condensed uppercase tracking-wider text-foreground/75 bg-white/[0.03] p-2.5 rounded-lg border border-white/5 flex items-center gap-2">
             <Users className="w-3.5 h-3.5 text-orange shrink-0" />
             <span>
-              <strong className="text-orange">{project.teamInfo.teamName || "Team"}:</strong>{" "}
-              {project.teamInfo.contribution}
+              {project.teamInfo.contribution.includes(project.teamInfo.teamName || "") ? (
+                project.teamInfo.contribution
+              ) : (
+                <>
+                  <strong className="text-orange">{project.teamInfo.teamName}:</strong>{" "}
+                  {project.teamInfo.contribution}
+                </>
+              )}
             </span>
           </div>
         )}
