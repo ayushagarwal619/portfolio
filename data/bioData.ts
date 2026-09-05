@@ -8,6 +8,7 @@ export interface HeroContent {
   primaryTitle: string;
   headline: string;
   terminalLine: string;
+  email: string;
 }
 
 export interface BioContent {
@@ -33,6 +34,7 @@ export const heroContent: HeroContent = {
   primaryTitle: "Full Stack Developer · AI/ML Enthusiast · B.Tech CSBS",
   headline: "Building AI-powered products, full-stack applications, and ideas that can scale.",
   terminalLine: "> building AI-powered products and full-stack applications",
+  email: "ayushtechnoworld@gmail.com",
 };
 
 export const bioContent: BioContent = {

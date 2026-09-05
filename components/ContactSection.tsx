@@ -24,7 +24,7 @@ export default function ContactSection() {
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 mt-2">
           <a
-            href="mailto:ayushagarwal619@gmail.com"
+            href={`mailto:${heroContent.email}`}
             onClick={() => playClick()}
             onMouseEnter={() => playHover()}
             className="flex items-center gap-2 bg-orange text-background hover:bg-white transition-all font-barlow-condensed text-sm sm:text-base tracking-widest uppercase font-bold px-7 py-3.5 rounded-full shadow-lg shadow-orange/20"

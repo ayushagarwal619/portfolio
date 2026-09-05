@@ -241,7 +241,7 @@ export default function HeroSection() {
             )}
 
             <a
-              href="mailto:ayushagarwal619@gmail.com"
+              href={`mailto:${heroContent.email}`}
               aria-label="Send Email"
               onClick={() => playClick()}
               onMouseEnter={() => playHover()}

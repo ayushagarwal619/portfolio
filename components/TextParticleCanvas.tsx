@@ -8,27 +8,27 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-interface FastParticle {
-  targetX: number;
-  targetY: number;
-  scatterX: number;
-  scatterY: number;
+interface SubtleParticle {
+  baseX: number;
+  baseY: number;
+  dirX: number;
+  dirY: number;
+  maxDist: number;
   size: number;
-  staggerDelay: number;
+  alpha: number;
+  isRed: boolean;
 }
 
 interface TextParticleCanvasProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   span1Ref: React.RefObject<HTMLSpanElement | null>;
   span2Ref: React.RefObject<HTMLSpanElement | null>;
-  onAssembleComplete?: () => void;
 }
 
 export default function TextParticleCanvas({
   containerRef,
   span1Ref,
   span2Ref,
-  onAssembleComplete,
 }: TextParticleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -47,21 +47,21 @@ export default function TextParticleCanvas({
     const span1 = span1Ref.current;
     const span2 = span2Ref.current;
 
-    if (!canvas || !container || !span1 || !span2) return;
+    if (!canvas || !container || !span1 || !span2 || prefersReducedMotion) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animFrameId: number | null = null;
     let isCancelled = false;
-    let whiteParticles: FastParticle[] = [];
-    let redParticles: FastParticle[] = [];
+    let particles: SubtleParticle[] = [];
     let dpr = 1;
-    let tween: gsap.core.Tween | null = null;
+    let scrollTriggerInstance: ScrollTrigger | null = null;
     let isRendering = false;
+    let lastRenderedProgress = -1;
     const animState = { progress: 0 };
 
-    const sampleText = () => {
+    const generateParticles = () => {
       if (!container || !span1 || !span2) return;
 
       const rect = container.getBoundingClientRect();
@@ -73,144 +73,102 @@ export default function TextParticleCanvas({
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
 
-      // Offscreen canvas for one-time pixel sampling
-      const offscreen = document.createElement("canvas");
-      offscreen.width = canvas.width;
-      offscreen.height = canvas.height;
-      const offCtx = offscreen.getContext("2d");
-      if (!offCtx) return;
-
       const rect1 = span1.getBoundingClientRect();
       const rect2 = span2.getBoundingClientRect();
 
-      const style1 = window.getComputedStyle(span1);
-      const style2 = window.getComputedStyle(span2);
-
-      const font1 = `${style1.fontStyle} ${style1.fontWeight} ${
-        parseFloat(style1.fontSize) * dpr
-      }px "biggerDisplay", sans-serif`;
-      const font2 = `${style2.fontStyle} ${style2.fontWeight} ${
-        parseFloat(style2.fontSize) * dpr
-      }px "biggerDisplay", sans-serif`;
-
-      // Render span1 text ("AYUSH KUMAR ")
-      offCtx.font = font1;
-      offCtx.fillStyle = "#ffffff";
-      offCtx.textBaseline = "top";
-      const relX1 = (rect1.left - rect.left) * dpr;
-      const relY1 = (rect1.top - rect.top) * dpr;
-      offCtx.fillText(span1.textContent || "AYUSH KUMAR ", relX1, relY1);
-
-      // Render span2 text ("AGARWAL")
-      offCtx.font = font2;
-      offCtx.fillStyle = "#f93434";
-      offCtx.textBaseline = "top";
-      const relX2 = (rect2.left - rect.left) * dpr;
-      const relY2 = (rect2.top - rect.top) * dpr;
-      offCtx.fillText(span2.textContent || "AGARWAL", relX2, relY2);
-
-      // Sample pixels
-      const imgData = offCtx.getImageData(0, 0, offscreen.width, offscreen.height);
-      const data = imgData.data;
+      const relX1 = rect1.left - rect.left;
+      const relY1 = rect1.top - rect.top;
+      const relX2 = rect2.left - rect.left;
+      const relY2 = rect2.top - rect.top;
 
       const isMobile = window.innerWidth < 768;
-      const maxBudget = isMobile ? 400 : 950;
-      
-      // Calculate step dynamically to stay strictly within budget
-      const pixelCountArea = (offscreen.width * offscreen.height) / (dpr * dpr);
-      let step = Math.max(3, Math.ceil(Math.sqrt(pixelCountArea / maxBudget)));
-      step = Math.round(step * dpr);
+      const countWhite = isMobile ? 35 : 65;
+      const countRed = isMobile ? 20 : 35;
 
-      const newWhite: FastParticle[] = [];
-      const newRed: FastParticle[] = [];
-      const scatterDist = isMobile ? 140 : 260;
+      const newParticles: SubtleParticle[] = [];
 
-      for (let y = 0; y < offscreen.height; y += step) {
-        for (let x = 0; x < offscreen.width; x += step) {
-          const idx = (y * offscreen.width + x) * 4;
-          const alpha = data[idx + 3];
+      // White particles around "AYUSH KUMAR "
+      for (let i = 0; i < countWhite; i++) {
+        const baseX = relX1 + Math.random() * rect1.width;
+        const baseY = relY1 + Math.random() * rect1.height;
+        const angle = Math.random() * Math.PI * 2;
+        const maxDist = (20 + Math.random() * 65) * (isMobile ? 0.7 : 1.0);
 
-          if (alpha > 80) {
-            const r = data[idx];
-            const g = data[idx + 1];
-            const isRed = r > 200 && g < 100;
-
-            const targetX = x / dpr;
-            const targetY = y / dpr;
-
-            const angle = Math.random() * Math.PI * 2;
-            const dist = (0.2 + Math.random() * 0.8) * scatterDist;
-            const scatterX = targetX + Math.cos(angle) * dist;
-            const scatterY = targetY + Math.sin(angle) * dist;
-
-            const particle: FastParticle = {
-              targetX,
-              targetY,
-              scatterX,
-              scatterY,
-              size: (0.9 + Math.random() * 0.8) * (isMobile ? 1.1 : 1.25),
-              staggerDelay: Math.random() * 0.25,
-            };
-
-            if (isRed) {
-              newRed.push(particle);
-            } else {
-              newWhite.push(particle);
-            }
-          }
-        }
+        newParticles.push({
+          baseX,
+          baseY,
+          dirX: Math.cos(angle),
+          dirY: Math.sin(angle),
+          maxDist,
+          size: (1.0 + Math.random() * 1.0) * (isMobile ? 0.9 : 1.1),
+          alpha: 0.4 + Math.random() * 0.5,
+          isRed: false,
+        });
       }
 
-      whiteParticles = newWhite;
-      redParticles = newRed;
+      // Red particles around "AGARWAL"
+      for (let i = 0; i < countRed; i++) {
+        const baseX = relX2 + Math.random() * rect2.width;
+        const baseY = relY2 + Math.random() * rect2.height;
+        const angle = Math.random() * Math.PI * 2;
+        const maxDist = (20 + Math.random() * 65) * (isMobile ? 0.7 : 1.0);
+
+        newParticles.push({
+          baseX,
+          baseY,
+          dirX: Math.cos(angle),
+          dirY: Math.sin(angle),
+          maxDist,
+          size: (1.0 + Math.random() * 1.0) * (isMobile ? 0.9 : 1.1),
+          alpha: 0.5 + Math.random() * 0.45,
+          isRed: true,
+        });
+      }
+
+      particles = newParticles;
     };
 
     const drawFrame = () => {
-      if (isCancelled || !ctx) return;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (isCancelled || !ctx || !canvas) return;
 
       const progress = animState.progress;
 
-      // 1. Batch render white particles in a single draw call
-      if (whiteParticles.length > 0) {
-        ctx.fillStyle = "rgba(245, 245, 245, 0.95)";
-        ctx.beginPath();
-        for (let i = 0; i < whiteParticles.length; i++) {
-          const p = whiteParticles[i];
-          const localP = Math.max(
-            0,
-            Math.min(1, (progress - p.staggerDelay) / (1 - p.staggerDelay))
-          );
-          const easeP = 1 - Math.pow(1 - localP, 3);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
 
-          const curX = p.scatterX + (p.targetX - p.scatterX) * easeP;
-          const curY = p.scatterY + (p.targetY - p.scatterY) * easeP;
+      // Group 1: White particles
+      ctx.beginPath();
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        if (p.isRed) continue;
 
-          ctx.rect(curX - p.size / 2, curY - p.size / 2, p.size, p.size);
-        }
-        ctx.fill();
+        const offset = p.maxDist * progress;
+        const curX = p.baseX + p.dirX * offset;
+        const curY = p.baseY + p.dirY * offset;
+
+        ctx.rect(curX - p.size / 2, curY - p.size / 2, p.size, p.size);
       }
+      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.fill();
 
-      // 2. Batch render red particles in a single draw call
-      if (redParticles.length > 0) {
-        ctx.fillStyle = "rgba(249, 52, 52, 0.98)";
-        ctx.beginPath();
-        for (let i = 0; i < redParticles.length; i++) {
-          const p = redParticles[i];
-          const localP = Math.max(
-            0,
-            Math.min(1, (progress - p.staggerDelay) / (1 - p.staggerDelay))
-          );
-          const easeP = 1 - Math.pow(1 - localP, 3);
+      // Group 2: Red particles
+      ctx.beginPath();
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        if (!p.isRed) continue;
 
-          const curX = p.scatterX + (p.targetX - p.scatterX) * easeP;
-          const curY = p.scatterY + (p.targetY - p.scatterY) * easeP;
+        const offset = p.maxDist * progress;
+        const curX = p.baseX + p.dirX * offset;
+        const curY = p.baseY + p.dirY * offset;
 
-          ctx.rect(curX - p.size / 2, curY - p.size / 2, p.size, p.size);
-        }
-        ctx.fill();
+        ctx.rect(curX - p.size / 2, curY - p.size / 2, p.size, p.size);
       }
+      ctx.fillStyle = "rgba(249, 52, 52, 0.85)";
+      ctx.fill();
+
+      ctx.restore();
+      lastRenderedProgress = progress;
     };
 
     const renderLoop = () => {
@@ -218,68 +176,55 @@ export default function TextParticleCanvas({
 
       drawFrame();
 
-      // Only continue loop while progress is updating
-      if (animState.progress < 1 && isRendering) {
+      if (Math.abs(animState.progress - lastRenderedProgress) > 0.0001 || isRendering) {
+        isRendering = false;
         animFrameId = requestAnimationFrame(renderLoop);
       } else {
-        isRendering = false;
         animFrameId = null;
       }
     };
 
     const triggerRender = () => {
-      if (!isRendering) {
+      if (animFrameId === null) {
         isRendering = true;
         animFrameId = requestAnimationFrame(renderLoop);
       }
     };
 
-    const startAnimation = () => {
-      if (prefersReducedMotion) {
-        animState.progress = 1;
-        drawFrame();
-        onAssembleComplete?.();
-        return;
-      }
+    const setupScrollTrigger = () => {
+      const rect = container.getBoundingClientRect();
+      const initialTop = rect.top + window.scrollY;
+      const triggerStart = Math.max(0, initialTop - 40);
 
-      animState.progress = 0;
-
-      tween = gsap.to(animState, {
-        progress: 1,
-        duration: 1.6,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: container,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-        onUpdate: () => {
+      scrollTriggerInstance = ScrollTrigger.create({
+        trigger: document.body,
+        start: `${triggerStart}px top`,
+        end: `${triggerStart + 350}px top`,
+        scrub: 1.0,
+        onUpdate: (self) => {
+          animState.progress = self.progress;
           triggerRender();
-        },
-        onComplete: () => {
-          animState.progress = 1;
-          drawFrame();
-          isRendering = false;
-          onAssembleComplete?.();
         },
       });
 
+      animState.progress = scrollTriggerInstance.progress || 0;
       triggerRender();
     };
 
-    document.fonts.ready.then(() => {
-      if (isCancelled) return;
-      sampleText();
-      startAnimation();
-    });
+    generateParticles();
+    setupScrollTrigger();
 
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     const handleResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         if (isCancelled) return;
-        sampleText();
-        drawFrame();
+        generateParticles();
+        if (scrollTriggerInstance) {
+          scrollTriggerInstance.refresh();
+          animState.progress = scrollTriggerInstance.progress || 0;
+        }
+        triggerRender();
       }, 150);
     };
 
@@ -290,10 +235,9 @@ export default function TextParticleCanvas({
       if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener("resize", handleResize);
       if (animFrameId !== null) cancelAnimationFrame(animFrameId);
-      tween?.kill();
-      tween?.scrollTrigger?.kill();
+      if (scrollTriggerInstance) scrollTriggerInstance.kill();
     };
-  }, [containerRef, span1Ref, span2Ref, prefersReducedMotion, onAssembleComplete]);
+  }, [containerRef, span1Ref, span2Ref, prefersReducedMotion]);
 
   return (
     <canvas
