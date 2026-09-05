@@ -190,7 +190,14 @@ export const projectsData: ProjectItem[] = [
       "Interactive learning platform for kids aged 3–8 with animated reels, 6 interactive storybooks, mini-games, and habit trackers.",
     fullDescription:
       "Interactive learning platform for kids aged 3–8, built around three guide characters (Nino, Miko, Zara) teaching curiosity, kindness, and problem-solving through animated learning reels, six interactive storybooks, mini-games (Balloon Pop, Slide Puzzle), a daily routine/habit tracker, and 'mood rings' for emotional awareness.",
-    techStack: ["HTML5", "CSS3", "Vanilla JavaScript", "GitHub Pages"],
+    techStack: [
+      "React Native",
+      "Expo",
+      "TypeScript",
+      "Express.js",
+      "PostgreSQL",
+      "Drizzle ORM",
+    ],
     liveDemoUrl: "https://ayushagarwal619.github.io/NIMIZA",
     githubUrl: "https://github.com/ayushagarwal619/NIMIZA-Application",
     images: [

@@ -32,6 +32,9 @@ import {
   SiRender,
   SiFigma,
   SiDocker,
+  SiExpo,
+  SiPostgresql,
+  SiDrizzle,
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 import { FaJava } from "react-icons/fa6";
@@ -68,6 +71,8 @@ export const techIconMap: Record<string, TechIconType> = {
   Express: SiExpress,
 
   // Frameworks & Libraries
+  "React Native": SiReact,
+  Expo: SiExpo,
   "Tailwind CSS": SiTailwindcss,
   Bootstrap: SiBootstrap,
   Flask: SiFlask,
@@ -91,6 +96,10 @@ export const techIconMap: Record<string, TechIconType> = {
   Render: SiRender,
 
   // Databases & Cloud
+  PostgreSQL: SiPostgresql,
+  Postgres: SiPostgresql,
+  "Drizzle ORM": SiDrizzle,
+  Drizzle: SiDrizzle,
   MySQL: SiMysql,
   MongoDB: SiMongodb,
   Supabase: SiSupabase,
@@ -130,6 +139,8 @@ export const techBrandColors: Record<string, string> = {
   Express: "#E2E8F0",
 
   // Frameworks & Libraries
+  "React Native": "#61DAFB",
+  Expo: "#FFFFFF",
   "Tailwind CSS": "#06B6D4",
   Bootstrap: "#9063CD",
   Flask: "#E2E8F0",
@@ -153,6 +164,10 @@ export const techBrandColors: Record<string, string> = {
   Render: "#46E3B7",
 
   // Databases & Cloud
+  PostgreSQL: "#4169E1",
+  Postgres: "#4169E1",
+  "Drizzle ORM": "#C5F74F",
+  Drizzle: "#C5F74F",
   MySQL: "#4479A1",
   MongoDB: "#47A248",
   Supabase: "#3ECF8E",
