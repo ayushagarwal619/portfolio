@@ -20,7 +20,7 @@ export default function HeroSection() {
   const linkedinLink = socialLinks.find((s) => s.name.toLowerCase().includes("linkedin"));
 
   return (
-    <section className="relative w-full min-h-[100dvh] flex flex-col justify-between items-center text-center px-4 sm:px-6 pt-28 sm:pt-32 md:pt-36 lg:pt-[28vh] pb-6 sm:pb-8 overflow-hidden select-none">
+    <section id="hero" className="relative w-full min-h-[100dvh] flex flex-col justify-between items-center text-center px-4 sm:px-6 pt-28 sm:pt-32 md:pt-36 lg:pt-[28vh] pb-6 sm:pb-8 overflow-hidden select-none">
       {/* Subtle Ambient Glow behind lower composition */}
       <div
         aria-hidden="true"
