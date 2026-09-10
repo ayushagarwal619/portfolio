@@ -19,7 +19,10 @@ export default function TransitionRouter({
 
   const [displayChildren, setDisplayChildren] = useState(children);
   const pendingChildren = useRef(children);
-  pendingChildren.current = children;
+
+  React.useEffect(() => {
+    pendingChildren.current = children;
+  }, [children]);
 
   useGSAP(
     () => {

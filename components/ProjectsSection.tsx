@@ -10,7 +10,6 @@ export default function ProjectsSection() {
   const [filter, setFilter] = useState<"all" | "featured">("all");
 
   const featuredProjects = projectsData.filter((p) => p.featured);
-  const otherProjects = projectsData.filter((p) => !p.featured);
 
   const displayedProjects =
     filter === "featured" ? featuredProjects : projectsData;

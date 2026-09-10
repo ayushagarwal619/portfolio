@@ -51,10 +51,12 @@ export default function ProjectImageCarousel({
     };
   }, [isCycling, isPaused, images.length, intervalMs]);
 
-  // Reset to the first frame if the images array itself changes (e.g. new project)
-  useEffect(() => {
+  // Reset activeIndex if the images array prop changes
+  const [prevImages, setPrevImages] = useState(images);
+  if (prevImages !== images) {
+    setPrevImages(images);
     setActiveIndex(0);
-  }, [images]);
+  }
 
   if (!hasImages) {
     return null;

@@ -21,15 +21,16 @@ export default function ProjectImageLightbox({
 }: ProjectImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
   const [isVisible, setIsVisible] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState(true);
 
-  useEffect(() => {
+  const [prevInitialIndex, setPrevInitialIndex] = useState(initialIndex);
+  if (prevInitialIndex !== initialIndex) {
+    setPrevInitialIndex(initialIndex);
     setCurrentIndex(initialIndex || 0);
-  }, [initialIndex]);
+  }
 
   // Mount animation: mount with opacity-0 then transition to opacity-100
   useEffect(() => {
-    setMounted(true);
     const raf = requestAnimationFrame(() => {
       setIsVisible(true);
     });

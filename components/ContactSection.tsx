@@ -2,7 +2,7 @@
 
 import React from "react";
 import { heroContent, assetsConfig, socialLinks } from "@/data/bioData";
-import { Download, Mail, ArrowUpRight, Github, Linkedin, Heart } from "lucide-react";
+import { Download, Mail, ArrowUpRight, Github, Linkedin } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
 
 export default function ContactSection() {

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { CertificateItem } from "@/data/certificatesData";
-import { Award, CheckCircle2, ExternalLink, Copy, Check, QrCode, ShieldCheck, Maximize2, X } from "lucide-react";
+import { Award, ExternalLink, Copy, Check, QrCode, ShieldCheck, Maximize2, X } from "lucide-react";
 import { playClick, playHover } from "@/lib/soundEffects";
 
 export default function CertificateCard({ cert }: { cert: CertificateItem }) {
@@ -22,28 +22,26 @@ export default function CertificateCard({ cert }: { cert: CertificateItem }) {
   };
 
   useEffect(() => {
-    if (showModal) {
-      const raf = requestAnimationFrame(() => {
-        setIsModalVisible(true);
-      });
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
+    if (!showModal) return;
 
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") {
-          handleCloseModal();
-        }
-      };
-      window.addEventListener("keydown", handleKeyDown);
+    const raf = requestAnimationFrame(() => {
+      setIsModalVisible(true);
+    });
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
-      return () => {
-        cancelAnimationFrame(raf);
-        document.body.style.overflow = originalOverflow || "";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      setIsModalVisible(false);
-    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      document.body.style.overflow = originalOverflow || "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [showModal]);
 
   const hasImage = !!cert.imagePath && !imgError;
