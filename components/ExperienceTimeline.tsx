@@ -1,123 +1,408 @@
 "use client";
 
-import React, { useState } from "react";
-import { getSortedExperience, ExperienceItem } from "@/data/experienceData";
-import { Rocket, Trophy, Briefcase, Calendar, CheckCircle2 } from "lucide-react";
+import React, { useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { getSortedExperience } from "@/data/experienceData";
+import { Rocket, Trophy, Briefcase, Calendar } from "lucide-react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const CATEGORIES = [
+  "All",
+  "Startup / Entrepreneurship",
+  "Hackathons",
+  "Job Simulations",
+] as const;
 
 export default function ExperienceTimeline() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   const allExperiences = getSortedExperience();
-
-  const categories = ["All", "Startup / Entrepreneurship", "Hackathons", "Job Simulations"];
-
   const filtered =
     selectedCategory === "All"
       ? allExperiences
       : allExperiences.filter((item) => item.category === selectedCategory);
 
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
+
+      const prefersReducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const section = sectionRef.current;
+      const media = gsap.matchMedia();
+
+      const setupTimeline = (
+        cardSelector: string,
+        nodeSelector: string,
+        connectorSelector?: string,
+        progressSelector?: string,
+        xOffset: number = 70,
+      ) => {
+        const cards = gsap.utils.toArray<HTMLElement>(cardSelector, section);
+        const nodes = gsap.utils.toArray<HTMLElement>(nodeSelector, section);
+        const connectors = connectorSelector
+          ? gsap.utils.toArray<HTMLElement>(connectorSelector, section)
+          : [];
+        const progressLine = progressSelector
+          ? section.querySelector<HTMLElement>(progressSelector)
+          : null;
+
+        if (!cards.length) return;
+
+        if (prefersReducedMotion) {
+          gsap.set(cards, { clearProps: "all", opacity: 1, x: 0, y: 0 });
+          gsap.set(nodes, { clearProps: "all", opacity: 1, scale: 1 });
+          if (connectors.length) gsap.set(connectors, { clearProps: "all", opacity: 1, scaleX: 1 });
+          if (progressLine) gsap.set(progressLine, { scaleY: 1 });
+          return;
+        }
+
+        // Initialize elements with transform-based offsets for performant animation
+        cards.forEach((card, index) => {
+          const side = card.dataset.side === "right" ? 1 : -1;
+          gsap.set(card, {
+            x: side * xOffset,
+            y: 18,
+            autoAlpha: 0,
+            transformOrigin: side > 0 ? "left center" : "right center",
+          });
+
+          if (nodes[index]) {
+            gsap.set(nodes[index], { autoAlpha: 0, scale: 0.6 });
+          }
+
+          if (connectors[index]) {
+            gsap.set(connectors[index], { autoAlpha: 0, scaleX: 0 });
+          }
+        });
+
+        if (progressLine) {
+          gsap.set(progressLine, { scaleY: 0, transformOrigin: "top center" });
+        }
+
+        const totalDuration = Math.max(1, (cards.length - 1) * 0.22 + 0.7);
+
+        const timeline = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: {
+            trigger: section,
+            start: "top 78%",
+            end: "bottom 70%",
+            scrub: 1.15,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        cards.forEach((card, index) => {
+          const at = index * 0.22;
+
+          timeline.to(
+            card,
+            { x: 0, y: 0, autoAlpha: 1, duration: 0.7 },
+            at,
+          );
+
+          if (nodes[index]) {
+            timeline.to(
+              nodes[index],
+              {
+                autoAlpha: 1,
+                scale: 1,
+                duration: 0.45,
+                ease: "power3.out",
+              },
+              at + 0.04,
+            );
+          }
+
+          if (connectors[index]) {
+            timeline.to(
+              connectors[index],
+              {
+                autoAlpha: 1,
+                scaleX: 1,
+                duration: 0.4,
+                ease: "power2.out",
+              },
+              at + 0.06,
+            );
+          }
+        });
+
+        if (progressLine) {
+          timeline.to(
+            progressLine,
+            {
+              scaleY: 1,
+              duration: totalDuration,
+              transformOrigin: "top center",
+              ease: "none",
+            },
+            0,
+          );
+        }
+      };
+
+      // Desktop: alternating layout with center progress track
+      media.add("(min-width: 768px)", () => {
+        setupTimeline(
+          ".experience-card-desktop",
+          ".experience-node-desktop",
+          ".experience-connector-desktop",
+          ".experience-progress-line",
+          70,
+        );
+      });
+
+      // Mobile/Tablet: single-column vertical layout
+      media.add("(max-width: 767px)", () => {
+        setupTimeline(
+          ".experience-card-mobile",
+          ".experience-node-mobile",
+          undefined,
+          ".experience-progress-line-mobile",
+          35,
+        );
+      });
+
+      // Refresh ScrollTrigger after DOM changes on category filtering
+      const refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 50);
+
+      return () => {
+        clearTimeout(refreshTimeout);
+        media.revert();
+      };
+    },
+    { scope: sectionRef, dependencies: [selectedCategory] },
+  );
+
   const getCategoryIcon = (category: string) => {
     if (category.includes("Startup")) {
-      return <Rocket className="w-4 h-4 text-orange" />;
+      return <Rocket className="h-4 w-4 text-orange" aria-hidden="true" />;
     }
     if (category.includes("Hackathon")) {
-      return <Trophy className="w-4 h-4 text-amber-400" />;
+      return <Trophy className="h-4 w-4 text-amber-400" aria-hidden="true" />;
     }
-    return <Briefcase className="w-4 h-4 text-blue-400" />;
+    return <Briefcase className="h-4 w-4 text-blue-400" aria-hidden="true" />;
   };
 
   return (
-    <div className="w-full flex flex-col gap-8 text-left">
-      {/* Category Filter Pills */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`text-xs font-barlow-condensed tracking-widest uppercase font-semibold px-4 py-2 rounded-full border transition-all cursor-pointer ${
-              selectedCategory === cat
-                ? "bg-orange text-background border-orange font-bold"
-                : "bg-white/5 text-foreground/70 border-white/10 hover:border-white/20 hover:text-white"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+    <div ref={sectionRef} className="w-full text-left">
+      {/* Category filter pills */}
+      <div className="mb-12 flex flex-wrap items-center gap-2">
+        {CATEGORIES.map((category) => {
+          const isActive = selectedCategory === category;
 
-      {/* Timeline Stream */}
-      <div className="relative border-l border-white/10 ml-3 sm:ml-4 pl-6 sm:pl-8 flex flex-col gap-8">
-        {filtered.map((item) => (
-          <div key={item.id} className="relative group">
-            {/* Timeline Bullet */}
-            <div
-              className={`absolute -left-[31px] sm:-left-[39px] top-1 w-5 h-5 rounded-full border-2 bg-background flex items-center justify-center transition-colors ${
-                item.isCurrent
-                  ? "border-orange shadow-[0_0_12px_rgba(249,52,52,0.6)]"
-                  : "border-white/30 group-hover:border-orange"
+          return (
+            <button
+              key={category}
+              type="button"
+              onClick={() => setSelectedCategory(category)}
+              aria-pressed={isActive}
+              className={`cursor-pointer rounded-full border px-4 py-2 font-barlow-condensed text-xs font-semibold uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange/50 ${
+                isActive
+                  ? "border-orange bg-orange text-background shadow-[0_0_15px_rgba(249,52,52,0.35)]"
+                  : "border-white/10 bg-white/5 text-foreground/70 hover:border-white/20 hover:text-white"
               }`}
             >
+              {category}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Desktop: alternating center timeline */}
+      <div className="relative hidden md:block">
+        {/* Base center line */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/10"
+        />
+        {/* Active orange progress line */}
+        <div
+          aria-hidden="true"
+          className="experience-progress-line absolute left-1/2 top-0 h-full w-px -translate-x-1/2 origin-top scale-y-0 bg-orange shadow-[0_0_12px_rgba(249,52,52,0.5)]"
+        />
+
+        <div className="flex flex-col gap-10 lg:gap-14">
+          {filtered.map((item, index) => {
+            const isLeft = index % 2 === 0;
+
+            return (
               <div
-                className={`w-2 h-2 rounded-full ${
-                  item.isCurrent ? "bg-orange" : "bg-white/40 group-hover:bg-orange"
+                key={item.id}
+                className="relative grid min-h-[180px] grid-cols-2 items-center gap-10 lg:gap-16"
+              >
+                {/* Left column */}
+                {isLeft ? (
+                  <div
+                    className="experience-card-desktop col-start-1 pr-4 lg:pr-8"
+                    data-side="left"
+                  >
+                    <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
+                  </div>
+                ) : (
+                  <div className="col-start-1" />
+                )}
+
+                {/* Center timeline node */}
+                <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                  <div
+                    className={`experience-node-desktop flex h-7 w-7 items-center justify-center rounded-full border-2 bg-background transition-colors duration-300 ${
+                      item.isCurrent
+                        ? "border-orange shadow-[0_0_18px_rgba(249,52,52,0.65)] ring-4 ring-orange/10"
+                        : "border-white/30"
+                    }`}
+                  >
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
+                        item.isCurrent
+                          ? "bg-orange shadow-[0_0_8px_#F93434] animate-pulse"
+                          : "bg-white/50"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                {/* Right column */}
+                {!isLeft ? (
+                  <div
+                    className="experience-card-desktop col-start-2 pl-4 lg:pl-8"
+                    data-side="right"
+                  >
+                    <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
+                  </div>
+                ) : (
+                  <div className="col-start-2" />
+                )}
+
+                {/* Horizontal connector line linking card to center node (CARD --------- ●) */}
+                <div
+                  aria-hidden="true"
+                  className={`experience-connector-desktop hidden md:block absolute top-1/2 -translate-y-1/2 h-px pointer-events-none ${
+                    isLeft
+                      ? "right-1/2 w-8 lg:w-12 bg-gradient-to-r from-transparent via-white/20 to-orange/60 origin-right mr-3.5"
+                      : "left-1/2 w-8 lg:w-12 bg-gradient-to-l from-transparent via-white/20 to-orange/60 origin-left ml-3.5"
+                  }`}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mobile/tablet: stable single-column timeline */}
+      <div className="relative ml-2 pl-6 sm:pl-8 md:hidden">
+        {/* Base vertical track */}
+        <div
+          aria-hidden="true"
+          className="absolute left-0 top-0 bottom-0 w-px bg-white/10"
+        />
+        {/* Active orange progress line */}
+        <div
+          aria-hidden="true"
+          className="experience-progress-line-mobile absolute left-0 top-0 h-full w-px origin-top scale-y-0 bg-orange shadow-[0_0_10px_rgba(249,52,52,0.45)]"
+        />
+
+        <div className="flex flex-col gap-8">
+          {filtered.map((item) => (
+            <div key={item.id} className="relative">
+              {/* Node bullet aligned with left track */}
+              <div
+                className={`experience-node-mobile absolute -left-[34px] sm:-left-[42px] top-5 z-10 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-background ${
+                  item.isCurrent
+                    ? "border-orange shadow-[0_0_12px_rgba(249,52,52,0.55)]"
+                    : "border-white/30"
                 }`}
-              />
-            </div>
-
-            {/* Content Card */}
-            <div className="rounded-xl border border-white/10 bg-[#171616] p-5 hover:border-orange/30 transition-all">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="inline-flex items-center gap-1 text-xs font-barlow-condensed uppercase tracking-wider text-foreground/60 bg-white/5 px-2.5 py-0.5 rounded border border-white/10">
-                    {getCategoryIcon(item.category)}
-                    {item.category}
-                  </span>
-                  {item.isCurrent && (
-                    <span className="text-[11px] font-barlow-condensed uppercase tracking-wider text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded border border-emerald-400/20 font-bold">
-                      Current Role
-                    </span>
-                  )}
-                  {item.result && (
-                    <span className="text-[11px] font-barlow-condensed uppercase tracking-wider text-orange bg-orange/10 px-2 py-0.5 rounded border border-orange/20 font-semibold">
-                      {item.result}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-1.5 text-xs text-foreground/50 font-barlow-condensed tracking-widest uppercase">
-                  <Calendar className="w-3.5 h-3.5 text-orange" />
-                  {item.date}
-                </div>
+              >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    item.isCurrent ? "bg-orange" : "bg-white/45"
+                  }`}
+                />
               </div>
 
-              <h4 className="text-xl font-bold font-barlow-condensed tracking-wide uppercase text-foreground group-hover:text-orange transition-colors">
-                {item.title}
-              </h4>
-              <p className="text-sm font-barlow-condensed uppercase tracking-wider text-orange font-semibold mt-0.5">
-                {item.role} &mdash; <span className="text-foreground/70">{item.organization}</span>
-              </p>
-
-              {item.shortDescription && (
-                <p className="text-sm text-foreground/70 leading-relaxed mt-2.5">
-                  {item.shortDescription}
-                </p>
-              )}
-
-              {item.skills && item.skills.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-white/5">
-                  {item.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="text-[11px] font-mono px-2 py-0.5 rounded bg-white/[0.03] text-foreground/60 border border-white/5"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              )}
+              {/* Mobile card */}
+              <div className="experience-card-mobile" data-side="right">
+                <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
+  );
+}
+
+type ExperienceCardProps = {
+  item: ReturnType<typeof getSortedExperience>[number];
+  getCategoryIcon: (category: string) => React.ReactNode;
+};
+
+function ExperienceCard({ item, getCategoryIcon }: ExperienceCardProps) {
+  return (
+    <article className="group relative rounded-xl border border-white/10 bg-[#171616] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)] sm:p-6">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2.5 py-1 font-barlow-condensed text-xs uppercase tracking-wider text-foreground/60">
+            {getCategoryIcon(item.category)}
+            {item.category}
+          </span>
+
+          {item.isCurrent && (
+            <span className="rounded border border-emerald-400/20 bg-emerald-400/10 px-2 py-1 font-barlow-condensed text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+              Current Role
+            </span>
+          )}
+
+          {item.result && (
+            <span className="rounded border border-orange/20 bg-orange/10 px-2 py-1 font-barlow-condensed text-[11px] font-semibold uppercase tracking-wider text-orange">
+              {item.result}
+            </span>
+          )}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-1.5 font-barlow-condensed text-xs uppercase tracking-widest text-foreground/50">
+          <Calendar className="h-3.5 w-3.5 text-orange" aria-hidden="true" />
+          {item.date}
+        </div>
+      </div>
+
+      <h4 className="font-barlow-condensed text-xl font-bold uppercase tracking-wide text-foreground transition-colors group-hover:text-orange sm:text-2xl">
+        {item.title}
+      </h4>
+      <p className="mt-0.5 font-barlow-condensed text-sm font-semibold uppercase tracking-wider text-orange">
+        {item.role} &mdash; <span className="text-foreground/70">{item.organization}</span>
+      </p>
+
+      {item.shortDescription && (
+        <p className="mt-3 text-sm leading-relaxed text-foreground/70">
+          {item.shortDescription}
+        </p>
+      )}
+
+      {item.skills && item.skills.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-white/5 pt-3">
+          {item.skills.map((skill) => (
+            <span
+              key={skill}
+              className="rounded border border-white/5 bg-white/[0.03] px-2 py-0.5 font-mono text-[11px] text-foreground/60"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
+    </article>
   );
 }
