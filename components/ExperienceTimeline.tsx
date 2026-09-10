@@ -32,9 +32,9 @@ export default function ExperienceTimeline() {
     () => {
       if (!sectionRef.current) return;
 
-      const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
+      const prefersReducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const section = sectionRef.current;
       const media = gsap.matchMedia();
@@ -60,6 +60,14 @@ export default function ExperienceTimeline() {
           gsap.set(nodes, { clearProps: "all", opacity: 1, scale: 1 });
           if (progressLine) gsap.set(progressLine, { scaleY: 1 });
           if (pointer) gsap.set(pointer, { yPercent: 0, autoAlpha: 1 });
+          nodes.forEach((node) => {
+            gsap.set(node, {
+              borderColor: "#f93434",
+              boxShadow: "0 0 18px rgba(249, 52, 52, 0.65)",
+            });
+            const dot = node.querySelector<HTMLElement>("span");
+            if (dot) gsap.set(dot, { backgroundColor: "#f93434" });
+          });
           return;
         }
 
@@ -74,12 +82,26 @@ export default function ExperienceTimeline() {
           });
 
           if (nodes[index]) {
-            gsap.set(nodes[index], { autoAlpha: 0, scale: 0.7 });
+            gsap.set(nodes[index], {
+              autoAlpha: 0,
+              scale: 0.7,
+              borderColor: "rgba(255, 255, 255, 0.3)",
+              boxShadow: "0 0 0px rgba(249, 52, 52, 0)",
+            });
+            const dot = nodes[index].querySelector<HTMLElement>("span");
+            if (dot) {
+              gsap.set(dot, {
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                boxShadow: "0 0 0px rgba(249, 52, 52, 0)",
+              });
+            }
           }
         });
 
         if (progressLine) gsap.set(progressLine, { scaleY: 0 });
         if (pointer) gsap.set(pointer, { yPercent: 0, autoAlpha: 1 });
+
+        const progressDuration = Math.max(1, filtered.length * 0.2);
 
         const timeline = gsap.timeline({
           defaults: { ease: "power2.out" },
@@ -92,6 +114,7 @@ export default function ExperienceTimeline() {
           },
         });
 
+        // 1. Cards entrance
         cards.forEach((card, index) => {
           const at = index * 0.18;
 
@@ -115,8 +138,9 @@ export default function ExperienceTimeline() {
           }
         });
 
+        // 2. Progress line and traveling pointer
         if (progressLine) {
-          const progressDuration = Math.max(1, filtered.length * 0.2);
+          const trackHeight = progressLine.offsetHeight;
 
           timeline.to(
             progressLine,
@@ -134,6 +158,7 @@ export default function ExperienceTimeline() {
               pointer,
               {
                 yPercent: 100,
+                y: trackHeight ? trackHeight - 12 : 0,
                 duration: progressDuration,
                 ease: "none",
               },
@@ -141,6 +166,53 @@ export default function ExperienceTimeline() {
             );
           }
         }
+
+        // 3. Progressive node activation: GREY -> ORANGE as progress line reaches each node
+        const isDesktop = Boolean(progressLine);
+        nodes.forEach((node, index) => {
+          let fraction = (index + 0.5) / nodes.length;
+
+          if (progressLine) {
+            const progressRect = progressLine.getBoundingClientRect();
+            const nodeRect = node.getBoundingClientRect();
+            if (progressRect.height > 0) {
+              const nodeCenter = nodeRect.top + nodeRect.height / 2;
+              fraction = Math.min(
+                0.98,
+                Math.max(0.02, (nodeCenter - progressRect.top) / progressRect.height),
+              );
+            }
+          }
+
+          const activationTime = fraction * progressDuration;
+
+          timeline.to(
+            node,
+            {
+              borderColor: "#f93434",
+              boxShadow: isDesktop
+                ? "0 0 18px rgba(249, 52, 52, 0.65)"
+                : "0 0 12px rgba(249, 52, 52, 0.55)",
+              duration: 0.15,
+              ease: "power1.inOut",
+            },
+            activationTime,
+          );
+
+          const dot = node.querySelector<HTMLElement>("span");
+          if (dot) {
+            timeline.to(
+              dot,
+              {
+                backgroundColor: "#f93434",
+                boxShadow: "0 0 8px rgba(249, 52, 52, 0.8)",
+                duration: 0.15,
+                ease: "power1.inOut",
+              },
+              activationTime,
+            );
+          }
+        });
       };
 
       media.add("(min-width: 768px)", () => {
@@ -155,7 +227,12 @@ export default function ExperienceTimeline() {
         setupTimeline(".experience-card-mobile", ".experience-node-mobile");
       });
 
+      const refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 50);
+
       return () => {
+        clearTimeout(refreshTimeout);
         media.revert();
       };
     },
@@ -234,16 +311,10 @@ export default function ExperienceTimeline() {
                   }`}
                 >
                   <div
-                    className={`experience-node-desktop flex h-7 w-7 items-center justify-center rounded-full border-2 bg-background ${
-                      item.isCurrent
-                        ? "border-orange shadow-[0_0_18px_rgba(249,52,52,0.65)]"
-                        : "border-white/30"
-                    }`}
+                    className="experience-node-desktop flex h-7 w-7 items-center justify-center rounded-full border-2 bg-background border-white/30"
                   >
                     <span
-                      className={`h-2.5 w-2.5 rounded-full ${
-                        item.isCurrent ? "bg-orange" : "bg-white/50"
-                      }`}
+                      className="h-2.5 w-2.5 rounded-full bg-white/50"
                     />
                   </div>
                 </div>
@@ -263,16 +334,10 @@ export default function ExperienceTimeline() {
           {filtered.map((item) => (
             <div key={item.id} className="relative">
               <div
-                className={`experience-node-mobile absolute -left-[1.15rem] top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-background ${
-                  item.isCurrent
-                    ? "border-orange shadow-[0_0_12px_rgba(249,52,52,0.55)]"
-                    : "border-white/30"
-                }`}
+                className="experience-node-mobile absolute -left-[1.15rem] top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-background border-white/30"
               >
                 <span
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    item.isCurrent ? "bg-orange" : "bg-white/45"
-                  }`}
+                  className="h-1.5 w-1.5 rounded-full bg-white/45"
                 />
               </div>
               <div className="experience-card-mobile" data-side="right">
