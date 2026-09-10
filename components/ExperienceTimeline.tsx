@@ -32,9 +32,9 @@ export default function ExperienceTimeline() {
     () => {
       if (!sectionRef.current) return;
 
-      const prefersReducedMotion =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
       const section = sectionRef.current;
       const media = gsap.matchMedia();
@@ -42,17 +42,15 @@ export default function ExperienceTimeline() {
       const setupTimeline = (
         cardSelector: string,
         nodeSelector: string,
-        connectorSelector?: string,
         progressSelector?: string,
-        xOffset: number = 70,
       ) => {
         const cards = gsap.utils.toArray<HTMLElement>(cardSelector, section);
         const nodes = gsap.utils.toArray<HTMLElement>(nodeSelector, section);
-        const connectors = connectorSelector
-          ? gsap.utils.toArray<HTMLElement>(connectorSelector, section)
-          : [];
         const progressLine = progressSelector
           ? section.querySelector<HTMLElement>(progressSelector)
+          : null;
+        const pointer = progressSelector
+          ? section.querySelector<HTMLElement>(".experience-pointer")
           : null;
 
         if (!cards.length) return;
@@ -60,35 +58,28 @@ export default function ExperienceTimeline() {
         if (prefersReducedMotion) {
           gsap.set(cards, { clearProps: "all", opacity: 1, x: 0, y: 0 });
           gsap.set(nodes, { clearProps: "all", opacity: 1, scale: 1 });
-          if (connectors.length) gsap.set(connectors, { clearProps: "all", opacity: 1, scaleX: 1 });
           if (progressLine) gsap.set(progressLine, { scaleY: 1 });
+          if (pointer) gsap.set(pointer, { yPercent: 0, autoAlpha: 1 });
           return;
         }
 
-        // Initialize elements with transform-based offsets for performant animation
+        // Keep layout entirely CSS-controlled. GSAP only animates transform/opacity.
         cards.forEach((card, index) => {
           const side = card.dataset.side === "right" ? 1 : -1;
           gsap.set(card, {
-            x: side * xOffset,
+            x: side * 70,
             y: 18,
             autoAlpha: 0,
             transformOrigin: side > 0 ? "left center" : "right center",
           });
 
           if (nodes[index]) {
-            gsap.set(nodes[index], { autoAlpha: 0, scale: 0.6 });
-          }
-
-          if (connectors[index]) {
-            gsap.set(connectors[index], { autoAlpha: 0, scaleX: 0 });
+            gsap.set(nodes[index], { autoAlpha: 0, scale: 0.7 });
           }
         });
 
-        if (progressLine) {
-          gsap.set(progressLine, { scaleY: 0, transformOrigin: "top center" });
-        }
-
-        const totalDuration = Math.max(1, (cards.length - 1) * 0.22 + 0.7);
+        if (progressLine) gsap.set(progressLine, { scaleY: 0 });
+        if (pointer) gsap.set(pointer, { yPercent: 0, autoAlpha: 1 });
 
         const timeline = gsap.timeline({
           defaults: { ease: "power2.out" },
@@ -102,7 +93,7 @@ export default function ExperienceTimeline() {
         });
 
         cards.forEach((card, index) => {
-          const at = index * 0.22;
+          const at = index * 0.18;
 
           timeline.to(
             card,
@@ -119,67 +110,52 @@ export default function ExperienceTimeline() {
                 duration: 0.45,
                 ease: "power3.out",
               },
-              at + 0.04,
-            );
-          }
-
-          if (connectors[index]) {
-            timeline.to(
-              connectors[index],
-              {
-                autoAlpha: 1,
-                scaleX: 1,
-                duration: 0.4,
-                ease: "power2.out",
-              },
-              at + 0.06,
+              at + 0.03,
             );
           }
         });
 
         if (progressLine) {
+          const progressDuration = Math.max(1, filtered.length * 0.2);
+
           timeline.to(
             progressLine,
             {
               scaleY: 1,
-              duration: totalDuration,
+              duration: progressDuration,
               transformOrigin: "top center",
               ease: "none",
             },
             0,
           );
+
+          if (pointer) {
+            timeline.to(
+              pointer,
+              {
+                yPercent: 100,
+                duration: progressDuration,
+                ease: "none",
+              },
+              0,
+            );
+          }
         }
       };
 
-      // Desktop: alternating layout with center progress track
       media.add("(min-width: 768px)", () => {
         setupTimeline(
           ".experience-card-desktop",
           ".experience-node-desktop",
-          ".experience-connector-desktop",
           ".experience-progress-line",
-          70,
         );
       });
 
-      // Mobile/Tablet: single-column vertical layout
       media.add("(max-width: 767px)", () => {
-        setupTimeline(
-          ".experience-card-mobile",
-          ".experience-node-mobile",
-          undefined,
-          ".experience-progress-line-mobile",
-          35,
-        );
+        setupTimeline(".experience-card-mobile", ".experience-node-mobile");
       });
-
-      // Refresh ScrollTrigger after DOM changes on category filtering
-      const refreshTimeout = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 50);
 
       return () => {
-        clearTimeout(refreshTimeout);
         media.revert();
       };
     },
@@ -198,8 +174,8 @@ export default function ExperienceTimeline() {
 
   return (
     <div ref={sectionRef} className="w-full text-left">
-      {/* Category filter pills */}
-      <div className="mb-12 flex flex-wrap items-center gap-2">
+      {/* Category filters */}
+      <div className="mb-10 flex flex-wrap items-center gap-2">
         {CATEGORIES.map((category) => {
           const isActive = selectedCategory === category;
 
@@ -211,7 +187,7 @@ export default function ExperienceTimeline() {
               aria-pressed={isActive}
               className={`cursor-pointer rounded-full border px-4 py-2 font-barlow-condensed text-xs font-semibold uppercase tracking-widest transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange/50 ${
                 isActive
-                  ? "border-orange bg-orange text-background shadow-[0_0_15px_rgba(249,52,52,0.35)]"
+                  ? "border-orange bg-orange text-background"
                   : "border-white/10 bg-white/5 text-foreground/70 hover:border-white/20 hover:text-white"
               }`}
             >
@@ -223,15 +199,17 @@ export default function ExperienceTimeline() {
 
       {/* Desktop: alternating center timeline */}
       <div className="relative hidden md:block">
-        {/* Base center line */}
         <div
           aria-hidden="true"
           className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/10"
         />
-        {/* Active orange progress line */}
         <div
           aria-hidden="true"
-          className="experience-progress-line absolute left-1/2 top-0 h-full w-px -translate-x-1/2 origin-top scale-y-0 bg-orange shadow-[0_0_12px_rgba(249,52,52,0.5)]"
+          className="experience-progress-line absolute left-1/2 top-0 h-full w-px -translate-x-1/2 origin-top scale-y-0 bg-orange shadow-[0_0_12px_rgba(249,52,52,0.45)]"
+        />
+        <div
+          aria-hidden="true"
+          className="experience-pointer pointer-events-none absolute left-1/2 top-0 z-20 h-3 w-3 -translate-x-1/2 rounded-full bg-orange shadow-[0_0_18px_rgba(249,52,52,0.9)]"
         />
 
         <div className="flex flex-col gap-10 lg:gap-14">
@@ -241,60 +219,34 @@ export default function ExperienceTimeline() {
             return (
               <div
                 key={item.id}
-                className="relative grid min-h-[180px] grid-cols-2 items-center gap-10 lg:gap-16"
+                className="relative grid min-h-[190px] grid-cols-2 items-center gap-10 lg:gap-16"
               >
-                {/* Left column */}
-                {isLeft ? (
-                  <div
-                    className="experience-card-desktop col-start-1 pr-4 lg:pr-8"
-                    data-side="left"
-                  >
-                    <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
-                  </div>
-                ) : (
-                  <div className="col-start-1" />
-                )}
+                <div
+                  className={`experience-card-desktop ${isLeft ? "col-start-1 pr-4 lg:pr-8" : "col-start-2 pl-4 lg:pl-8"}`}
+                  data-side={isLeft ? "left" : "right"}
+                >
+                  <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
+                </div>
 
-                {/* Center timeline node */}
-                <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                <div
+                  className={`absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 ${
+                    isLeft ? "" : ""
+                  }`}
+                >
                   <div
-                    className={`experience-node-desktop flex h-7 w-7 items-center justify-center rounded-full border-2 bg-background transition-colors duration-300 ${
+                    className={`experience-node-desktop flex h-7 w-7 items-center justify-center rounded-full border-2 bg-background ${
                       item.isCurrent
-                        ? "border-orange shadow-[0_0_18px_rgba(249,52,52,0.65)] ring-4 ring-orange/10"
+                        ? "border-orange shadow-[0_0_18px_rgba(249,52,52,0.65)]"
                         : "border-white/30"
                     }`}
                   >
                     <span
-                      className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
-                        item.isCurrent
-                          ? "bg-orange shadow-[0_0_8px_#F93434] animate-pulse"
-                          : "bg-white/50"
+                      className={`h-2.5 w-2.5 rounded-full ${
+                        item.isCurrent ? "bg-orange" : "bg-white/50"
                       }`}
                     />
                   </div>
                 </div>
-
-                {/* Right column */}
-                {!isLeft ? (
-                  <div
-                    className="experience-card-desktop col-start-2 pl-4 lg:pl-8"
-                    data-side="right"
-                  >
-                    <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
-                  </div>
-                ) : (
-                  <div className="col-start-2" />
-                )}
-
-                {/* Horizontal connector line linking card to center node (CARD --------- ●) */}
-                <div
-                  aria-hidden="true"
-                  className={`experience-connector-desktop hidden md:block absolute top-1/2 -translate-y-1/2 h-px pointer-events-none ${
-                    isLeft
-                      ? "right-1/2 w-8 lg:w-12 bg-gradient-to-r from-transparent via-white/20 to-orange/60 origin-right mr-3.5"
-                      : "left-1/2 w-8 lg:w-12 bg-gradient-to-l from-transparent via-white/20 to-orange/60 origin-left ml-3.5"
-                  }`}
-                />
               </div>
             );
           })}
@@ -302,24 +254,16 @@ export default function ExperienceTimeline() {
       </div>
 
       {/* Mobile/tablet: stable single-column timeline */}
-      <div className="relative ml-2 pl-6 sm:pl-8 md:hidden">
-        {/* Base vertical track */}
+      <div className="relative pl-7 md:hidden">
         <div
           aria-hidden="true"
-          className="absolute left-0 top-0 bottom-0 w-px bg-white/10"
+          className="absolute bottom-0 left-2 top-0 w-px bg-white/10"
         />
-        {/* Active orange progress line */}
-        <div
-          aria-hidden="true"
-          className="experience-progress-line-mobile absolute left-0 top-0 h-full w-px origin-top scale-y-0 bg-orange shadow-[0_0_10px_rgba(249,52,52,0.45)]"
-        />
-
         <div className="flex flex-col gap-8">
           {filtered.map((item) => (
             <div key={item.id} className="relative">
-              {/* Node bullet aligned with left track */}
               <div
-                className={`experience-node-mobile absolute -left-[34px] sm:-left-[42px] top-5 z-10 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-background ${
+                className={`experience-node-mobile absolute -left-[1.15rem] top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-background ${
                   item.isCurrent
                     ? "border-orange shadow-[0_0_12px_rgba(249,52,52,0.55)]"
                     : "border-white/30"
@@ -331,8 +275,6 @@ export default function ExperienceTimeline() {
                   }`}
                 />
               </div>
-
-              {/* Mobile card */}
               <div className="experience-card-mobile" data-side="right">
                 <ExperienceCard item={item} getCategoryIcon={getCategoryIcon} />
               </div>
@@ -351,7 +293,7 @@ type ExperienceCardProps = {
 
 function ExperienceCard({ item, getCategoryIcon }: ExperienceCardProps) {
   return (
-    <article className="group relative rounded-xl border border-white/10 bg-[#171616] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)] sm:p-6">
+    <article className="group rounded-xl border border-white/10 bg-[#171616] p-5 transition-[transform,border-color,box-shadow] duration-300 ease-out hover:scale-[1.025] hover:-translate-y-0.5 hover:border-orange/30 hover:shadow-[0_16px_45px_rgba(0,0,0,0.24)] sm:p-6">
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2.5 py-1 font-barlow-condensed text-xs uppercase tracking-wider text-foreground/60">
@@ -382,7 +324,7 @@ function ExperienceCard({ item, getCategoryIcon }: ExperienceCardProps) {
         {item.title}
       </h4>
       <p className="mt-0.5 font-barlow-condensed text-sm font-semibold uppercase tracking-wider text-orange">
-        {item.role} &mdash; <span className="text-foreground/70">{item.organization}</span>
+        {item.role} — <span className="text-foreground/70">{item.organization}</span>
       </p>
 
       {item.shortDescription && (
