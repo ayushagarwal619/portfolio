@@ -55,7 +55,7 @@ Currently, I'm focused on improving my development skills, strengthening my DSA 
  */
 export const assetsConfig: AssetsConfig = {
   profilePortrait: "", // Set empty string for clean monogram/badge fallback
-  resumePdf: "/resume.pdf", // Gracefully handled
+  resumePdf: "/FINAL RESUME LATEST.pdf",
   favicon: "/favicon-32.png",
   logoMark: "/Images/logo-mark.svg",
   logoBadge: "/Images/logo-badge.svg",
