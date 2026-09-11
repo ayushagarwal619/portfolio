@@ -126,8 +126,8 @@ export default function ParticleCanvas({ mixBlend = false }: ParticleCanvasProps
     };
 
     const updatePhysics = () => {
-      const interactionRadius = 170 * dpr;
-      const maxDisplacement = 28 * dpr;
+      const interactionRadius = 260 * dpr;
+      const maxDisplacement = 85 * dpr;
 
       particles.forEach((particle) => {
         const dx = particle.x - mouse.x;
@@ -135,15 +135,16 @@ export default function ParticleCanvas({ mixBlend = false }: ParticleCanvasProps
         const distance = Math.hypot(dx, dy);
 
         if (distance > 0 && distance < interactionRadius) {
-          const force = (1 - distance / interactionRadius) * 0.7 * dpr;
+          const ratio = 1 - distance / interactionRadius;
+          const force = ratio * ratio * 3.4 * dpr;
           particle.velocityX += (dx / distance) * force;
           particle.velocityY += (dy / distance) * force;
         }
 
-        particle.velocityX += (particle.originX - particle.x) * 0.012;
-        particle.velocityY += (particle.originY - particle.y) * 0.012;
-        particle.velocityX *= 0.88;
-        particle.velocityY *= 0.88;
+        particle.velocityX += (particle.originX - particle.x) * 0.022;
+        particle.velocityY += (particle.originY - particle.y) * 0.022;
+        particle.velocityX *= 0.90;
+        particle.velocityY *= 0.90;
         particle.x += particle.velocityX;
         particle.y += particle.velocityY;
 
