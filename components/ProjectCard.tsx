@@ -91,7 +91,7 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
         )}
 
         {/* Action Links */}
-        <div className="flex items-center gap-3 pt-3 border-t border-white/5">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-3 border-t border-white/5">
           {project.liveDemoUrl && (
             <a
               href={project.liveDemoUrl}

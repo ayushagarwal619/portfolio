@@ -136,9 +136,9 @@ export default function HeroSection() {
       ======================================================== */}
       <div className="relative z-10 w-full max-w-5xl 2xl:max-w-6xl mx-auto flex flex-col items-center gap-4 sm:gap-5 my-auto">
         {/* 1. Small Status / Eyebrow Pill (Below chin level) */}
-        <div className="inline-flex items-center gap-2.5 rounded-full border border-orange/40 bg-black/60 backdrop-blur-md px-4 sm:px-5 py-1.5 text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] sm:tracking-[0.22em] text-white/90 shadow-[0_0_20px_rgba(249,52,52,0.15)] animate-in fade-in duration-700">
-          <span className="w-2 h-2 rounded-full bg-orange shadow-[0_0_10px_#F93434] animate-pulse shrink-0" />
-          <span>BUILDING AI-POWERED PRODUCTS AND FULL-STACK APPLICATIONS</span>
+        <div className="inline-flex items-center gap-2 sm:gap-2.5 rounded-full border border-orange/40 bg-black/60 backdrop-blur-md px-3.5 sm:px-5 py-1.5 text-[8.5px] sm:text-[10px] md:text-xs font-mono uppercase tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.22em] text-white/90 text-center leading-tight shadow-[0_0_20px_rgba(249,52,52,0.15)] animate-in fade-in duration-700 max-w-[92vw] sm:max-w-none">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-orange shadow-[0_0_10px_#F93434] animate-pulse shrink-0" />
+          <span className="whitespace-normal">BUILDING AI-POWERED PRODUCTS AND FULL-STACK APPLICATIONS</span>
         </div>
 
         {/* 2. Large Wide Personal Wordmark (AYUSH KUMAR in white, AGARWAL in red with accent flare) */}

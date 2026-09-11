@@ -411,7 +411,7 @@ export default function AboutSection() {
         {/* Main Statement & Bio Showcase Card */}
         <div
           ref={mainCardRef}
-          className="rounded-2xl border border-white/10 bg-[#171616] p-7 sm:p-10 flex flex-col gap-8 shadow-xl relative overflow-hidden group hover:border-white/20 transition-all duration-300"
+          className="rounded-2xl border border-white/10 bg-[#171616] p-5 sm:p-7 md:p-10 flex flex-col gap-8 shadow-xl relative overflow-hidden group hover:border-white/20 transition-all duration-300"
         >
           {/* Headline: Contextual & Bold */}
           <h3

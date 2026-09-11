@@ -224,7 +224,7 @@ export default function Navbar() {
 
       {/* Mobile HUD Fullscreen Overlay */}
       <div
-        className={`fixed inset-0 z-[998] bg-background/95 backdrop-blur-2xl flex flex-col items-start justify-center px-8 gap-6 transition-all duration-500 ease-in-out md:hidden ${
+        className={`fixed inset-0 z-[998] bg-background/95 backdrop-blur-2xl flex flex-col items-start justify-center px-8 py-12 gap-5 overflow-y-auto max-h-[100dvh] transition-all duration-500 ease-in-out md:hidden ${
           isNavbarOpen
             ? "opacity-100 pointer-events-auto translate-y-0"
             : "opacity-0 pointer-events-none -translate-y-4"
